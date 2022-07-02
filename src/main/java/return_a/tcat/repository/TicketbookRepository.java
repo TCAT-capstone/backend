@@ -11,8 +11,7 @@ import javax.persistence.PersistenceContext;
 @RequiredArgsConstructor
 public class TicketbookRepository {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
     public Ticketbook findOne(Long id){
         return em.find(Ticketbook.class,id);

@@ -11,7 +11,7 @@ public class TicketLike {
 
     @Id
     @GeneratedValue
-    @Column(name="like_id")
+    @Column(name="ticket_like_id")
     private Long id;
 
     @ManyToOne(fetch=FetchType.LAZY)

@@ -19,7 +19,7 @@ public class Ticket {
     private Long id;
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="book_id")
+    @JoinColumn(name="ticketbook_id")
     private Ticketbook ticketbook;
 
     @ManyToOne(fetch=FetchType.LAZY)
@@ -29,7 +29,7 @@ public class Ticket {
     private String ticket_img;
 
     @Enumerated(EnumType.STRING)
-    private TicketStatus status; //YES,NO
+    private TicketValidation ticketValidation; //YES,NO
     private Long like_count;
 
     //ticket정보

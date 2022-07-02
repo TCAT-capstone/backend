@@ -11,8 +11,7 @@ import javax.persistence.PersistenceContext;
 @RequiredArgsConstructor
 public class MemberRepository {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final EntityManager em;
 
     public Member findOne(Long id){
         return em.find(Member.class,id);

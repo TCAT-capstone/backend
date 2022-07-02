@@ -1,5 +1,5 @@
 package return_a.tcat.domain;
 
 public enum Category {
-    musical, concert, movie, sport, etc
+   MUSICAL, CONCERT, MOVIE, SPORT, ETC
 }

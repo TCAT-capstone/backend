@@ -5,10 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import return_a.tcat.domain.*;
+import return_a.tcat.dto.TicketCreateReqDto;
+import return_a.tcat.dto.TicketCreateResDto;
 import return_a.tcat.repository.MemberRepository;
 import return_a.tcat.repository.TicketRepository;
 import return_a.tcat.repository.TicketbookRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -52,25 +55,24 @@ public class TicketService {
         ticketRepository.deleteById(ticket_id);
     }
 
-    public Ticket createTicket(Long member_id, Long book_id, String ticket_img, TicketStatus status,
-                             String ticket_title, String ticket_date, String ticket_seat, String ticket_location,
-                             String title, String content, Category category){
+    public Ticket createTicket(TicketCreateReqDto request){
         Ticket ticket=new Ticket();
-        Member member= memberRepository.findOne(member_id);
-        Ticketbook ticketbook=ticketbookRepository.findOne(book_id);
+        Member member= memberRepository.findOne(request.getMember_id());
+        Ticketbook ticketbook=ticketbookRepository.findOne(request.getBook_id());
         ticket.setMember(member);
         ticket.setTicketbook(ticketbook);
-        ticket.setTicket_img(ticket_img);
-        ticket.setStatus(status);
+        ticket.setTicket_img(request.getTicket_img());
+        ticket.setTicketValidation(request.getTicketValidation());
 
-        ticket.setTicket_title(ticket_title);
-        ticket.setTicket_date(ticket_date);
-        ticket.setTicket_seat(ticket_seat);
-        ticket.setTicket_location(ticket_location);
+        ticket.setTicket_title(request.getTicket_title());
+        ticket.setTicket_date(request.getTicket_date());
+        ticket.setTicket_seat(request.getTicket_seat());
+        ticket.setTicket_location(request.getTicket_location());
 
-        ticket.setTitle(title);
-        ticket.setContent(content);
-        ticket.setCategory(category);
+        ticket.setTitle(request.getTitle());
+        ticket.setContent(request.getContent());
+        ticket.setDate(LocalDateTime.now());
+        ticket.setCategory(request.getCategory());
 
         return ticket;
     }

@@ -11,7 +11,7 @@ import java.util.List;
 public class Ticketbook {
     @Id
     @GeneratedValue
-    @Column(name="book_id")
+    @Column(name="ticketbook_id")
     private Long id;
 
     @ManyToOne(fetch=FetchType.LAZY)
