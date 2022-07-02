@@ -31,6 +31,12 @@ public class TicketRepository{
                 .getResultList();
     }
 
+    public List<Ticket> findByBook_Id(Long book_id){
+        return em.createQuery("select t from Ticket t where t.ticketbook.id= :book_id", Ticket.class)
+                .setParameter("book_id",book_id)
+                .getResultList();
+    }
+
     public List<Ticket> findByMember_Id(Long member_id){
         return em.createQuery("select t from Ticket t where t.member.id= :member_id",Ticket.class)
                 .setParameter("member_id",member_id)
@@ -38,9 +44,10 @@ public class TicketRepository{
     }
 
     public void deleteById(Long ticket_id){
-        em.createQuery("delete from Ticket t where t.id =:ticket_id",Ticket.class)
-                .setParameter("ticket_id", ticket_id)
-                .executeUpdate();
+        Ticket ticket=em.find(Ticket.class,ticket_id);
+        em.remove(ticket);
     }
+
+
 
 }

@@ -32,6 +32,17 @@ public class TicketApiController {
         return new Result(collect);
     }
 
+    @GetMapping("/ticketbooks/{ticketbook_id}/tickets")
+    public Result ticketbookAll(@PathVariable("ticketbook_id") Long book_id) {
+        List<Ticket> findTickets = ticketService.findByTicketbooks(book_id);
+        //엔티티 -> DTO 변환
+        List<TicketDto> collect = findTickets.stream()
+                .map(t -> new TicketDto(t.getId(),t.getTicket_img(),t.getTitle(),t.getLike_count(),t.getMember().getName(),t.getDate()))
+                .collect(Collectors.toList());
+        return new Result(collect);
+    }
+
+
     @Data
     @AllArgsConstructor
     static class Result<T> {
@@ -73,15 +84,16 @@ public class TicketApiController {
 
         private Category category;
     }
-/* set안쓰고 수정찾기
+
     @PostMapping("/tickets")
-    public CreateTicketResponse saveMemberV2(@RequestBody @Valid CreateTicketRequest request) {
-        Ticket ticket= new Ticket();
-        ticket.s
+    public CreateTicketResponse saveTicket(@RequestBody @Valid CreateTicketRequest request) {
+        Ticket ticket=ticketService.createTicket(request.getMember_id(),request.getBook_id(),request.getTicket_img(),request.getStatus(),
+                request.getTicket_title(),request.getTicket_date(),request.getTicket_seat(),request.getTicket_location(),
+                request.getTitle(),request.getContent(),request.getCategory());
         Long id = ticketService.save(ticket);
         return new CreateTicketResponse(id);
     }
-*/
+
     @Data
     static class CreateTicketRequest{
         private Long member_id;
@@ -116,4 +128,7 @@ public class TicketApiController {
     public void deleteTicket(@PathVariable Long ticket_id){
         ticketService.deleteById(ticket_id);
     }
+
+
+
 }
