@@ -1,12 +1,15 @@
 package return_a.tcat.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TicketLike {
 
     @Id
@@ -22,4 +25,13 @@ public class TicketLike {
     @JoinColumn(name="ticket_id")
     private Ticket ticket;
 
+    public void setMember(Member member) {
+        this.member = member;
+        member.getLikes().add(this);
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+        ticket.getLikes().add(this);
+    }
 }
