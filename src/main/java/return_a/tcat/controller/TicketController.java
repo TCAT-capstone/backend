@@ -1,14 +1,13 @@
 package return_a.tcat.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import return_a.tcat.domain.*;
-import return_a.tcat.dto.TicketCreateReqDto;
-import return_a.tcat.dto.TicketCreateResDto;
-import return_a.tcat.dto.TicketDetailResDto;
-import return_a.tcat.dto.TicketListResDto;
+import return_a.tcat.domain.Ticket;
+import return_a.tcat.dto.ticket.TicketListResDto;
+import return_a.tcat.dto.ticket.TicketDto;
+import return_a.tcat.dto.ticket.TicketReqDto;
 import return_a.tcat.service.TicketService;
 
 import javax.validation.Valid;
@@ -19,50 +18,46 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class TicketController {
+
     private final TicketService ticketService;
 
     @GetMapping("/tickets/trending")
-    public List<TicketListResDto> all(){
-
+    public ResponseEntity<TicketListResDto> getTrendTickets() {
         List<Ticket> findTickets = ticketService.findTickets();
-        //엔티티 -> DTO 변환
-        List<TicketListResDto> collect = findTickets.stream()
-                .map(t -> new TicketListResDto(t))
+        List<TicketDto> collect = findTickets.stream()
+                .map(t -> new TicketDto(t))
                 .collect(Collectors.toList());
-        return collect;
+        return ResponseEntity.status(HttpStatus.OK).body(new TicketListResDto(collect));
     }
 
-    @GetMapping("/ticketbooks/{ticketbook_id}/tickets")
-    public List<TicketListResDto> ticketbookAll(@PathVariable("ticketbook_id") Long book_id) {
-        List<Ticket> findTickets = ticketService.findByTicketbooks(book_id);
-        //엔티티 -> DTO 변환
-        List<TicketListResDto> collect = findTickets.stream()
-                .map(t -> new TicketListResDto(t))
+    @GetMapping("/ticketbooks/{ticketbookId}/tickets")
+    public ResponseEntity<TicketListResDto> getTicketbookTickets(@PathVariable("ticketbookId") Long ticketbookId) {
+        List<Ticket> findTickets = ticketService.findTicketsByTicketbook(ticketbookId);
+        List<TicketDto> collect = findTickets.stream()
+                .map(t -> new TicketDto(t))
                 .collect(Collectors.toList());
-        return collect;
+        return ResponseEntity.status(HttpStatus.OK).body(new TicketListResDto(collect));
     }
 
-    @GetMapping("/tickets/{ticket_id}")
-    public TicketDetailResDto detail(@PathVariable("ticket_id") Long ticket_id){
-
-        Ticket findTicket = ticketService.findTicket(ticket_id);
-        return new TicketDetailResDto(findTicket);
+    @GetMapping("/tickets/{ticketId}")
+    public ResponseEntity<TicketDto> getTicketDetail(@PathVariable("ticketId") Long ticketId) {
+        Ticket ticket = ticketService.findTicket(ticketId);
+        return ResponseEntity.status(HttpStatus.OK).body(new TicketDto(ticket));
     }
 
 
     @PostMapping("/tickets")
-    public TicketCreateResDto saveTicket(@RequestBody @Valid TicketCreateReqDto request) {
-        Ticket ticket=ticketService.createTicket(request);
-        Long id = ticketService.save(ticket);
-        return new TicketCreateResDto(id);
+    public ResponseEntity<TicketDto> saveTicket(@RequestBody @Valid TicketReqDto ticketReqDto) {
+        Long ticketId = ticketService.save(ticketReqDto);
+        Ticket ticket = ticketService.findTicket(ticketId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new TicketDto(ticket));
     }
 
 
-    @DeleteMapping("/tickets/{ticket_id}")
-    public void deleteTicket(@PathVariable Long ticket_id){
-        ticketService.deleteById(ticket_id);
+    @DeleteMapping("/tickets/{ticketId}")
+    public ResponseEntity<Object> deleteTicket(@PathVariable Long ticketId) {
+        ticketService.deleteById(ticketId);
+        return ResponseEntity.ok().build();
     }
-
-
 
 }
