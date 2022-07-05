@@ -20,6 +20,9 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
+    @Column(length = 16)
+    private String homeId;
+
     @Column(length = 30)
     private String name;
 
