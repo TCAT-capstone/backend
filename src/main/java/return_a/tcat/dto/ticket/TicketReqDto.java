@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TicketReqDto {
 
     private Long memberId;
