@@ -1,6 +1,7 @@
 package return_a.tcat.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Ticketbook {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticketbook_id")
     private Long id;
 
@@ -30,4 +31,10 @@ public class Ticketbook {
         this.member = member;
         member.getTicketbooks().add(this);
     }
+
+    @Builder
+    public Ticketbook(String name) {
+        this.name = name;
+    }
+
 }

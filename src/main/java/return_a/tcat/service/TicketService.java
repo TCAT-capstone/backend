@@ -9,6 +9,7 @@ import return_a.tcat.repository.MemberRepository;
 import return_a.tcat.repository.TicketRepository;
 import return_a.tcat.repository.TicketbookRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -42,7 +43,7 @@ public class TicketService {
                 .casting(ticketDto.getCasting())
                 .title(ticketDto.getTitle())
                 .content(ticketDto.getContent())
-                .date(ticketDto.getDate())
+                .date(LocalDateTime.now())
                 .category(ticketDto.getCategory())
                 .build();
 
@@ -82,5 +83,15 @@ public class TicketService {
     @Transactional
     public void deleteById(Long ticketId) {
         ticketRepository.deleteById(ticketId);
+    }
+
+    /**
+     * 티켓 수정
+     */
+    @Transactional
+    public Ticket updateTicket(Long ticketId,TicketReqDto ticketReqDto){
+        Ticket ticket=ticketRepository.findOne(ticketId);
+        ticket.changeTicket(ticketReqDto);
+        return ticket;
     }
 }

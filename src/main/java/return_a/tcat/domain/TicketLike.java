@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class TicketLike {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ticket_like_id")
     private Long id;
 
@@ -24,6 +24,11 @@ public class TicketLike {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="ticket_id")
     private Ticket ticket;
+
+    public TicketLike(Member member,Ticket ticket){
+        this.member=member;
+        this.ticket=ticket;
+    }
 
     public void setMember(Member member) {
         this.member = member;

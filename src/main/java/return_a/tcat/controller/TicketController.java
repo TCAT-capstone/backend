@@ -60,4 +60,10 @@ public class TicketController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/tickets/{ticketId}")
+    public ResponseEntity<TicketDto> updateTicket( @RequestBody TicketReqDto ticketReqDto,@PathVariable("ticketId") Long ticketId){
+        Ticket ticket=ticketService.updateTicket(ticketId,ticketReqDto);
+        return ResponseEntity.status(HttpStatus.OK).body(new TicketDto(ticket));
+    }
+
 }

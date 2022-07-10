@@ -1,6 +1,7 @@
 package return_a.tcat.domain;
 
 import lombok.*;
+import return_a.tcat.dto.ticket.TicketReqDto;
 
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.util.List;
 public class Ticket {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticket_id")
     private Long id;
 
@@ -71,10 +72,43 @@ public class Ticket {
         this.category = category;
     }
 
+    public void changeTicket(TicketReqDto ticketReqDto) {
+
+        if (ticketReqDto.getTicketImg() != null) {
+            this.ticketImg = ticketReqDto.getTicketImg();
+        }
+
+        if (ticketReqDto.getTicketTitle() != null) {
+            this.ticketTitle = ticketReqDto.getTicketTitle();
+        }
+        if (ticketReqDto.getTicketDate() != null) {
+            this.ticketDate = ticketReqDto.getTicketDate();
+        }
+        if (ticketReqDto.getTicketSeat() != null) {
+            this.ticketSeat = ticketReqDto.getTicketSeat();
+        }
+        if (ticketReqDto.getTicketLocation() != null) {
+            this.ticketLocation = ticketReqDto.getTicketLocation();
+        }
+
+        if (ticketReqDto.getTitle() != null) {
+            this.title = ticketReqDto.getTitle();
+        }
+        if (ticketReqDto.getContent() != null) {
+            this.content = ticketReqDto.getContent();
+        }
+        if (ticketReqDto.getCategory() != null) {
+            this.category = ticketReqDto.getCategory();
+        }
+
+        this.date = LocalDateTime.now();
+
+    }
+
 
     // 연관관계 메서드
     public void changeTicketbook(Ticketbook ticketbook) {
-        if(this.ticketbook != null){
+        if (this.ticketbook != null) {
             this.ticketbook.getTickets().remove(this);
         }
 
