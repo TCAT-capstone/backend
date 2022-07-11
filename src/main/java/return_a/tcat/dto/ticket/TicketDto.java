@@ -17,7 +17,7 @@ public class TicketDto {
 
     private final String ticketImg;
     private final TicketValidation ticketValidation;
-    private Integer likeCount;
+    private final Integer likeCount;
 
     private final String ticketTitle;
     private final LocalDate ticketDate;
@@ -36,7 +36,7 @@ public class TicketDto {
         ticketbookId = ticket.getTicketbook().getId();
         ticketImg = ticket.getTicketImg();
         ticketValidation = ticket.getTicketValidation();
-        likeCount=ticket.getLikeCount();
+        likeCount = ticket.getLikeCount();
         ticketTitle = ticket.getTicketTitle();
         ticketDate = ticket.getTicketDate();
         ticketSeat = ticket.getTicketSeat();
