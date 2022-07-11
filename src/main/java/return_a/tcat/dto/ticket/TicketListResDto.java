@@ -7,9 +7,9 @@ import java.util.List;
 @Getter
 public class TicketListResDto {
 
-    private List<TicketDto> tickets;
+    private List<TicketSimpleDto> tickets;
 
-    public TicketListResDto(List<TicketDto> tickets) {
+    public TicketListResDto(List<TicketSimpleDto> tickets) {
         this.tickets = tickets;
     }
 }

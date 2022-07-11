@@ -8,6 +8,7 @@ import return_a.tcat.domain.Ticket;
 import return_a.tcat.dto.ticket.TicketListResDto;
 import return_a.tcat.dto.ticket.TicketDto;
 import return_a.tcat.dto.ticket.TicketReqDto;
+import return_a.tcat.dto.ticket.TicketSimpleDto;
 import return_a.tcat.service.TicketService;
 
 import javax.validation.Valid;
@@ -24,8 +25,8 @@ public class TicketController {
     @GetMapping("/tickets/trending")
     public ResponseEntity<TicketListResDto> getTrendTickets() {
         List<Ticket> findTickets = ticketService.findTickets();
-        List<TicketDto> collect = findTickets.stream()
-                .map(t -> new TicketDto(t))
+        List<TicketSimpleDto> collect = findTickets.stream()
+                .map(t -> new TicketSimpleDto(t))
                 .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(new TicketListResDto(collect));
     }
@@ -33,8 +34,8 @@ public class TicketController {
     @GetMapping("/ticketbooks/{ticketbookId}/tickets")
     public ResponseEntity<TicketListResDto> getTicketbookTickets(@PathVariable("ticketbookId") Long ticketbookId) {
         List<Ticket> findTickets = ticketService.findTicketsByTicketbook(ticketbookId);
-        List<TicketDto> collect = findTickets.stream()
-                .map(t -> new TicketDto(t))
+        List<TicketSimpleDto> collect = findTickets.stream()
+                .map(t -> new TicketSimpleDto(t))
                 .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(new TicketListResDto(collect));
     }
