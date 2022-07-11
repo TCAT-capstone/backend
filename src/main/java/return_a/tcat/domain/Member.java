@@ -16,7 +16,7 @@ import java.util.List;
 public class Member {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
@@ -45,8 +45,9 @@ public class Member {
     private List<Ticket> tickets = new ArrayList<>();
 
     @Builder
-    public Member(String name, String bio, String memberImg, String accessToken, String provider,
+    public Member(String homeId, String name, String bio, String memberImg, String accessToken, String provider,
                   Integer likeCount, Integer ticketCount) {
+        this.homeId = homeId;
         this.name = name;
         this.bio = bio;
         this.memberImg = memberImg;
@@ -54,5 +55,27 @@ public class Member {
         this.provider = provider;
         this.likeCount = likeCount;
         this.ticketCount = ticketCount;
+    }
+
+    public void changeMemberName(String name){
+        this.name=name;
+    }
+
+    public void changeMemberBio(String bio){
+        this.bio=bio;
+    }
+
+    /**
+     * 좋아요 받은수 증가
+     */
+    public void addLikeCount() {
+        this.likeCount++;
+    }
+
+    /**
+     * 좋아요 받은수 감소
+     */
+    public void subtractLikeCount() {
+        this.likeCount--;
     }
 }
