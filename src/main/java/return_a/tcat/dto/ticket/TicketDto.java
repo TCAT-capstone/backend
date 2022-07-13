@@ -5,7 +5,6 @@ import return_a.tcat.domain.Category;
 import return_a.tcat.domain.Ticket;
 import return_a.tcat.domain.TicketValidation;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,7 +19,7 @@ public class TicketDto {
     private final Integer likeCount;
 
     private final String ticketTitle;
-    private final LocalDate ticketDate;
+    private final LocalDateTime ticketDate;
     private final String ticketSeat;
     private final String ticketLocation;
 
