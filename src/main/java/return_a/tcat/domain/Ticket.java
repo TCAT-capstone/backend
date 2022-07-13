@@ -5,7 +5,6 @@ import return_a.tcat.dto.ticket.TicketReqDto;
 
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class Ticket {
 
     //ticket정보
     private String ticketTitle;
-    private LocalDate ticketDate;
+    private LocalDateTime ticketDate;
     private String ticketSeat;
     private String ticketLocation;
 
@@ -54,7 +53,7 @@ public class Ticket {
 
     @Builder
     public Ticket(Ticketbook ticketbook, Member member, String ticketImg, TicketValidation ticketValidation,
-                  Integer likeCount, String ticketTitle, LocalDate ticketDate, String ticketSeat, String ticketLocation,
+                  Integer likeCount, String ticketTitle, LocalDateTime ticketDate, String ticketSeat, String ticketLocation,
                   String casting, String title, String content, LocalDateTime date, Category category) {
         this.ticketbook = ticketbook;
         this.member = member;
