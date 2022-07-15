@@ -42,8 +42,10 @@ public class Ticket {
     //글 정보
     private String casting;
     private String title;
-    private String content;
     private LocalDateTime date;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String content;
 
     @Enumerated(EnumType.STRING)
     private Category category;
