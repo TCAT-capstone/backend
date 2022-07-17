@@ -5,13 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import return_a.tcat.domain.Member;
-import return_a.tcat.dto.member.MemberDto;
 import return_a.tcat.dto.member.MemberNameResDto;
 import return_a.tcat.dto.member.MemberProfileResDto;
 import return_a.tcat.dto.member.MemberReqDto;
 import return_a.tcat.service.MemberService;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -39,13 +36,6 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(new MemberNameResDto(member));
     }
 
-    @PostMapping("/members")
-    public ResponseEntity<MemberDto> saveMember(@RequestBody @Valid MemberReqDto memberReqDto){
-        Long memberId=memberService.save(memberReqDto);
-        Member member=memberService.findMember(memberId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new MemberDto(member));
-    }
-
     @DeleteMapping("/members/{memberId}")
     public ResponseEntity<Object> deleteMember(@PathVariable("memberId") Long memberId){
         memberService.deleteById(memberId);
@@ -66,4 +56,17 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(bio);
     }
 
+    @PatchMapping("members/{memberId}/homeId")
+    public ResponseEntity<String> updateMemberHomeId(@RequestBody MemberReqDto memberReqDto, @PathVariable("memberId") Long memberId){
+
+        String homeId=memberService.updateMemberHomeId(memberId,memberReqDto);
+        return ResponseEntity.status(HttpStatus.OK).body(homeId);
+    }
+
+    @PatchMapping("members/{memberId}/memberImg")
+    public ResponseEntity<String> updateMemberImg(@RequestBody MemberReqDto memberReqDto, @PathVariable("memberId") Long memberId){
+
+        String memberImg=memberService.updateMemberImg(memberId,memberReqDto);
+        return ResponseEntity.status(HttpStatus.OK).body(memberImg);
+    }
 }

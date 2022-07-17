@@ -14,7 +14,7 @@ public class MemberReqDto {
     private String name;
     private String bio;
     private String memberImg;
-    private String accessToken;
+    private String email;
     private String provider;
     private Integer likeCount;
     private Integer ticketCount;
