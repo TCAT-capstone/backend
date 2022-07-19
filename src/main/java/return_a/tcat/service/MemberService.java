@@ -16,28 +16,10 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    @Transactional
-    public Long save(MemberReqDto memberDto) {
-        Member member = Member.builder()
-                .homeId(memberDto.getHomeId())
-                .name(memberDto.getName())
-                .bio(memberDto.getBio())
-                .memberImg(memberDto.getMemberImg())
-                .accessToken(memberDto.getAccessToken())
-                .provider(memberDto.getProvider())
-                .likeCount(0)
-                .ticketCount(0)
-                .build();
 
-        validateDuplicateMember(member); //중복 회원 검증
-        memberRepository.save(member);
-
-        return member.getId();
-    }
-
-    private void validateDuplicateMember(Member member) {
+    private void validateDuplicateMember(String homeId) {
         List<Member> findMembers =
-                memberRepository.findByHomeIds(member.getHomeId());
+                memberRepository.findByHomeIds(homeId);
         if (!findMembers.isEmpty()) {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
@@ -70,6 +52,22 @@ public class MemberService {
         member.changeMemberBio(memberReqDto.getBio());
         return member.getBio();
     }
+
+    @Transactional
+    public String updateMemberHomeId(Long memberId,MemberReqDto memberReqDto){
+        Member member=memberRepository.findOne(memberId);
+        validateDuplicateMember(memberReqDto.getHomeId());
+        member.changeMemberHomeId(memberReqDto.getHomeId());
+        return member.getHomeId();
+    }
+
+    @Transactional
+    public String updateMemberImg(Long memberId,MemberReqDto memberReqDto){
+        Member member=memberRepository.findOne(memberId);
+        member.changeMemberImg(memberReqDto.getMemberImg());
+        return member.getMemberImg();
+    }
+
 
 
 }

@@ -30,7 +30,7 @@ public class Member {
     private String bio;
 
     private String memberImg;
-    private String accessToken;
+    private String email;
     private String provider;
     private Integer likeCount;
     private Integer ticketCount;
@@ -45,13 +45,13 @@ public class Member {
     private List<Ticket> tickets = new ArrayList<>();
 
     @Builder
-    public Member(String homeId, String name, String bio, String memberImg, String accessToken, String provider,
+    public Member(String homeId, String name, String bio, String memberImg, String email, String provider,
                   Integer likeCount, Integer ticketCount) {
         this.homeId = homeId;
         this.name = name;
         this.bio = bio;
         this.memberImg = memberImg;
-        this.accessToken = accessToken;
+        this.email = email;
         this.provider = provider;
         this.likeCount = likeCount;
         this.ticketCount = ticketCount;
@@ -63,6 +63,14 @@ public class Member {
 
     public void changeMemberBio(String bio){
         this.bio=bio;
+    }
+
+    public void changeMemberHomeId(String homeId){
+        this.homeId=homeId;
+    }
+
+    public void changeMemberImg(String memberImg){
+        this.memberImg=memberImg;
     }
 
     /**

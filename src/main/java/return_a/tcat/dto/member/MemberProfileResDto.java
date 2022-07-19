@@ -13,7 +13,7 @@ public class MemberProfileResDto {
     private String name;
     private String bio;
     private String memberImg;
-    private String accessToken;
+    private String email;
     private String provider;
     private Integer likeCount;
     private Integer ticketCount;
@@ -24,7 +24,7 @@ public class MemberProfileResDto {
         this.name=member.getName();
         this.bio=member.getBio();
         this.memberImg=member.getMemberImg();
-        this.accessToken=member.getAccessToken();
+        this.email=member.getEmail();
         this.provider=member.getProvider();
         this.likeCount=member.getLikeCount();
         this.ticketCount=member.getTicketCount();

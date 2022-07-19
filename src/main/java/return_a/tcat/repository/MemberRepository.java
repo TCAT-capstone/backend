@@ -17,6 +17,8 @@ public class MemberRepository {
         em.persist(member);
     }
 
+
+
     public Member findOne(Long id){
         return em.find(Member.class,id);
     }
@@ -30,6 +32,18 @@ public class MemberRepository {
     public Member findByHomeId(String homeId) {
         return em.createQuery("select m from Member m where m.homeId = :homeId", Member.class)
                 .setParameter("homeId", homeId)
+                .getSingleResult();
+    }
+
+    public List<Member> findByEmails(String email){
+        return em.createQuery("select m from Member m where m.email=:email",Member.class)
+                .setParameter("email",email)
+                .getResultList();
+    }
+
+    public Member findByEmail(String email){
+        return em.createQuery("select m from Member m where m.email=:email",Member.class)
+                .setParameter("email",email)
                 .getSingleResult();
     }
 

@@ -12,7 +12,7 @@ public class MemberDto {
     private final String name;
     private final String bio;
     private final String memberImg;
-    private final String accessToken;
+    private final String email;
     private final String provider;
     private final Integer likeCount;
     private final Integer ticketCount;
@@ -23,7 +23,7 @@ public class MemberDto {
         name=member.getName();
         bio=member.getBio();
         memberImg=member.getMemberImg();
-        accessToken=member.getAccessToken();
+        email=member.getEmail();
         provider=member.getProvider();
         likeCount=member.getLikeCount();
         ticketCount=member.getTicketCount();
