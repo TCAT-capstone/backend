@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class TicketSimpleDto {
 
     private final Long ticketId;
+    private final String homeId;
     private final String memberName;
 
     private final String ticketImg;
@@ -19,6 +20,7 @@ public class TicketSimpleDto {
 
     public TicketSimpleDto(Ticket ticket) {
         ticketId = ticket.getId();
+        homeId = ticket.getMember().getHomeId();
         memberName = ticket.getMember().getName();
         ticketImg = ticket.getTicketImg();
         likeCount = ticket.getLikeCount();
