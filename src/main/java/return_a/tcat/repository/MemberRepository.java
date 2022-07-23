@@ -5,7 +5,9 @@ import org.springframework.stereotype.Repository;
 import return_a.tcat.domain.Member;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -13,12 +15,12 @@ public class MemberRepository {
 
     private final EntityManager em;
 
-    public void save(Member member){
+    public void save(Member member) {
         em.persist(member);
     }
 
-    public Member findOne(Long id){
-        return em.find(Member.class,id);
+    public Member findOne(Long id) {
+        return em.find(Member.class, id);
     }
 
     public List<Member> findByHomeIds(String homeId) {
@@ -33,8 +35,18 @@ public class MemberRepository {
                 .getSingleResult();
     }
 
-    public void deleteById(Long memberId){
-        Member member=em.find(Member.class,memberId);
+    public Optional<Member> findByEmail(String email) {
+        try {
+            return Optional.ofNullable(em.createQuery("select m from Member m where m.email=:email", Member.class)
+                    .setParameter("email", email)
+                    .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    public void deleteById(Long memberId) {
+        Member member = em.find(Member.class, memberId);
         em.remove(member);
     }
 
