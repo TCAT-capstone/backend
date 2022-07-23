@@ -56,6 +56,11 @@ public class MemberService {
         return memberRepository.findByHomeId(homeId);
     }
 
+    public Member findMemberByAuth() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return memberRepository.findByEmail(email).get();
+    }
+
     @Transactional
     public void deleteById(Long memberId) {
         memberRepository.deleteById(memberId);
