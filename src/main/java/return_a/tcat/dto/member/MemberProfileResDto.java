@@ -13,20 +13,18 @@ public class MemberProfileResDto {
     private String name;
     private String bio;
     private String memberImg;
-    private String accessToken;
-    private String provider;
+    private String email;
     private Integer likeCount;
     private Integer ticketCount;
 
-    public MemberProfileResDto(Member member){
-        this.id=member.getId();
-        this.homeId=member.getHomeId();
-        this.name=member.getName();
-        this.bio=member.getBio();
-        this.memberImg=member.getMemberImg();
-        this.accessToken=member.getAccessToken();
-        this.provider=member.getProvider();
-        this.likeCount=member.getLikeCount();
-        this.ticketCount=member.getTicketCount();
+    public MemberProfileResDto(Member member) {
+        this.id = member.getId();
+        this.homeId = member.getHomeId();
+        this.name = member.getName();
+        this.bio = member.getBio();
+        this.memberImg = member.getMemberImg();
+        this.email = member.getEmail();
+        this.likeCount = member.getLikeCount();
+        this.ticketCount = member.getTicketCount();
     }
 }
