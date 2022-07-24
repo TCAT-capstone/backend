@@ -1,11 +1,16 @@
 package return_a.tcat.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import return_a.tcat.domain.Member;
-import return_a.tcat.dto.member.MemberReqDto;
+import return_a.tcat.dto.member.MemberCreateDto;
+import return_a.tcat.exception.ResourceNotFoundException;
 import return_a.tcat.repository.MemberRepository;
+import return_a.tcat.security.UserPrincipal;
 
 import java.util.List;
 
@@ -17,13 +22,13 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long save(MemberReqDto memberDto) {
+    public Long save(MemberCreateDto memberDto) {
         Member member = Member.builder()
-                .homeId(memberDto.getHomeId())
+                .homeId(null)
+                .bio(null)
                 .name(memberDto.getName())
-                .bio(memberDto.getBio())
                 .memberImg(memberDto.getMemberImg())
-                .accessToken(memberDto.getAccessToken())
+                .email(memberDto.getEmail())
                 .provider(memberDto.getProvider())
                 .likeCount(0)
                 .ticketCount(0)
@@ -47,9 +52,13 @@ public class MemberService {
         return memberRepository.findOne(memberId);
     }
 
-
     public Member findMemberByHomeId(String homeId) {
         return memberRepository.findByHomeId(homeId);
+    }
+
+    public Member findMemberByAuth() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return memberRepository.findByEmail(email).get();
     }
 
     @Transactional
@@ -57,18 +66,25 @@ public class MemberService {
         memberRepository.deleteById(memberId);
     }
 
-    @Transactional
-    public String updateMemberName(Long memberId,MemberReqDto memberReqDto){
-        Member member=memberRepository.findOne(memberId);
-        member.changeMemberName(memberReqDto.getName());
-        return member.getName();
-    }
+//    @Transactional
+//    public String updateMemberName(Long memberId,MemberReqDto memberReqDto){
+//        Member member=memberRepository.findOne(memberId);
+//        member.changeMemberName(memberReqDto.getName());
+//        return member.getName();
+//    }
+//
+//    @Transactional
+//    public String updateMemberBio(Long memberId,MemberReqDto memberReqDto){
+//        Member member=memberRepository.findOne(memberId);
+//        member.changeMemberBio(memberReqDto.getBio());
+//        return member.getBio();
+//    }
 
-    @Transactional
-    public String updateMemberBio(Long memberId,MemberReqDto memberReqDto){
-        Member member=memberRepository.findOne(memberId);
-        member.changeMemberBio(memberReqDto.getBio());
-        return member.getBio();
+    public UserDetails loadUserById(String id) {
+        Member member = memberRepository.findOne(Long.parseLong(id));
+        if (member == null)
+            throw new ResourceNotFoundException("User", "id", id);
+        return UserPrincipal.create(member);
     }
 
 

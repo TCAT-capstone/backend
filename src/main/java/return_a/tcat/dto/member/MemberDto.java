@@ -12,20 +12,18 @@ public class MemberDto {
     private final String name;
     private final String bio;
     private final String memberImg;
-    private final String accessToken;
-    private final String provider;
+    private final String email;
     private final Integer likeCount;
     private final Integer ticketCount;
 
-    public MemberDto(Member member){
-        memberId=member.getId();
-        homeId=member.getHomeId();
-        name=member.getName();
-        bio=member.getBio();
-        memberImg=member.getMemberImg();
-        accessToken=member.getAccessToken();
-        provider=member.getProvider();
-        likeCount=member.getLikeCount();
-        ticketCount=member.getTicketCount();
+    public MemberDto(Member member) {
+        memberId = member.getId();
+        homeId = member.getHomeId();
+        name = member.getName();
+        bio = member.getBio();
+        memberImg = member.getMemberImg();
+        email = member.getEmail();
+        likeCount = member.getLikeCount();
+        ticketCount = member.getTicketCount();
     }
 }

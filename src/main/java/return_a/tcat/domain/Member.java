@@ -30,8 +30,11 @@ public class Member {
     private String bio;
 
     private String memberImg;
-    private String accessToken;
-    private String provider;
+    private String email;
+
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
     private Integer likeCount;
     private Integer ticketCount;
 
@@ -45,24 +48,24 @@ public class Member {
     private List<Ticket> tickets = new ArrayList<>();
 
     @Builder
-    public Member(String homeId, String name, String bio, String memberImg, String accessToken, String provider,
+    public Member(String homeId, String name, String bio, String memberImg, String email, AuthProvider provider,
                   Integer likeCount, Integer ticketCount) {
         this.homeId = homeId;
         this.name = name;
         this.bio = bio;
         this.memberImg = memberImg;
-        this.accessToken = accessToken;
+        this.email = email;
         this.provider = provider;
         this.likeCount = likeCount;
         this.ticketCount = ticketCount;
     }
 
-    public void changeMemberName(String name){
-        this.name=name;
+    public void changeMemberName(String name) {
+        this.name = name;
     }
 
-    public void changeMemberBio(String bio){
-        this.bio=bio;
+    public void changeMemberBio(String bio) {
+        this.bio = bio;
     }
 
     /**
