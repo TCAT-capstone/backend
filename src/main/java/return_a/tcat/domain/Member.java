@@ -86,4 +86,25 @@ public class Member {
     public void subtractLikeCount() {
         this.likeCount--;
     }
+
+    /**
+     * 티켓수 증가
+     */
+    public void addTicketCount(){
+        this.ticketCount++;
+    }
+
+    /**
+     * 티켓수 감소
+     */
+    public void subtractTicketCount(){
+        this.ticketCount--;
+    }
+
+    /**
+     * 티켓 삭제시 member 총 좋아요수 감소
+     */
+    public void subtractTotalLikeCount(Integer count){
+        this.likeCount-=count;
+    }
 }
