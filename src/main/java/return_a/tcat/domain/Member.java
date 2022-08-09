@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import return_a.tcat.dto.member.MemberSignUpReqDto;
 
 
 import javax.persistence.*;
@@ -60,13 +61,17 @@ public class Member {
         this.ticketCount = ticketCount;
     }
 
-    public void changeMemberName(String name) {
-        this.name = name;
+    public void changeMemberInfo(String name,String homeId,String bio){
+        this.name=name;
+        this.homeId=homeId;
+        this.bio=bio;
     }
 
-    public void changeMemberBio(String bio) {
+    public void changeMemberProfile(String name,String bio) {
+        this.name = name;
         this.bio = bio;
     }
+
 
     /**
      * 좋아요 받은수 증가
@@ -80,5 +85,26 @@ public class Member {
      */
     public void subtractLikeCount() {
         this.likeCount--;
+    }
+
+    /**
+     * 티켓수 증가
+     */
+    public void addTicketCount(){
+        this.ticketCount++;
+    }
+
+    /**
+     * 티켓수 감소
+     */
+    public void subtractTicketCount(){
+        this.ticketCount--;
+    }
+
+    /**
+     * 티켓 삭제시 member 총 좋아요수 감소
+     */
+    public void subtractTotalLikeCount(Integer count){
+        this.likeCount-=count;
     }
 }
