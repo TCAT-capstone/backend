@@ -11,6 +11,7 @@ import return_a.tcat.repository.TicketbookRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -48,7 +49,7 @@ public class TicketService {
                 .build();
 
         ticketRepository.save(ticket);
-
+        member.addTicketCount();
         return ticket.getId();
     }
 
@@ -82,6 +83,11 @@ public class TicketService {
      */
     @Transactional
     public void deleteById(Long ticketId) {
+        Ticket ticket=ticketRepository.findOne(ticketId);
+        Member member = ticket.getMember();
+        Integer likecount=ticket.getLikeCount();
+        member.subtractTotalLikeCount(likecount);
+        member.subtractTicketCount();
         ticketRepository.deleteById(ticketId);
     }
 
@@ -94,4 +100,15 @@ public class TicketService {
         ticket.changeTicket(ticketReqDto);
         return ticket;
     }
+
+    /**
+     * 통합 검색
+     */
+    public List<Ticket> findByKeyword(String keyword,
+                                      String ticketTitle, LocalDateTime ticketDate,
+                                      String ticketSeat,String ticketLocation){
+        return ticketRepository.findByKeyword(keyword,ticketTitle,ticketDate,ticketSeat,ticketLocation);
+    }
+
+
 }
