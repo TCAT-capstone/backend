@@ -61,13 +61,12 @@ public class Member {
         this.ticketCount = ticketCount;
     }
 
-    public void changeMemberInfo(String name,String homeId,String bio){
-        this.name=name;
-        this.homeId=homeId;
-        this.bio=bio;
+    public void changeMemberInfo(String name, String homeId) {
+        this.name = name;
+        this.homeId = homeId;
     }
 
-    public void changeMemberProfile(String name,String bio) {
+    public void changeMemberProfile(String name, String bio) {
         this.name = name;
         this.bio = bio;
     }
@@ -90,21 +89,21 @@ public class Member {
     /**
      * 티켓수 증가
      */
-    public void addTicketCount(){
+    public void addTicketCount() {
         this.ticketCount++;
     }
 
     /**
      * 티켓수 감소
      */
-    public void subtractTicketCount(){
+    public void subtractTicketCount() {
         this.ticketCount--;
     }
 
     /**
      * 티켓 삭제시 member 총 좋아요수 감소
      */
-    public void subtractTotalLikeCount(Integer count){
-        this.likeCount-=count;
+    public void subtractTotalLikeCount(Integer count) {
+        this.likeCount -= count;
     }
 }

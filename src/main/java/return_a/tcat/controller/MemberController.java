@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import return_a.tcat.domain.Member;
 import return_a.tcat.dto.member.*;
+import return_a.tcat.exception.DuplicateMemberException;
 import return_a.tcat.service.MemberService;
 
 
@@ -22,6 +23,14 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(new MemberProfileResDto(member));
     }
 
+    @PatchMapping("members/my-profile")
+    public ResponseEntity<MemberEditResDto> updateMyProfile(@RequestBody MemberEditReqDto memberEditReqDto) {
+        Member member = memberService.findMemberByAuth();
+        Long memberId = member.getId();
+        memberService.updateMemberProfile(memberId, memberEditReqDto);
+        return ResponseEntity.status(HttpStatus.OK).body(new MemberEditResDto(member));
+    }
+
     @GetMapping("/members/{homeId}/profile")
     public MemberProfileResDto profile(@PathVariable("homeId") String homeId) {
         Member member = memberService.findMemberByHomeId(homeId);
@@ -35,20 +44,18 @@ public class MemberController {
     }
 
     @PatchMapping("members/signup")
-    public ResponseEntity<MemberSignUpResDto> signup(@RequestBody MemberSignUpReqDto memberSignUpReqDto){
-        Member member=memberService.findMemberByAuth();
-        Long memberId=member.getId();
-        memberService.updateMemberInfo(memberId,memberSignUpReqDto);
+    public ResponseEntity<MemberSignUpResDto> signup(@RequestBody MemberSignUpReqDto memberSignUpReqDto) {
+        Member member = memberService.findMemberByAuth();
+        Long memberId = member.getId();
+        memberService.updateMemberInfo(memberId, memberSignUpReqDto);
         return ResponseEntity.status(HttpStatus.OK).body(new MemberSignUpResDto(member));
     }
 
-    @PatchMapping("members/profile-edit")
-    public ResponseEntity<MemberEditResDto> edit(@RequestBody MemberEditReqDto memberEditReqDto){
-        Member member=memberService.findMemberByAuth();
-        Long memberId=member.getId();
-        memberService.updateMemberProfile(memberId,memberEditReqDto);
-        return ResponseEntity.status(HttpStatus.OK).body(new MemberEditResDto(member));
+    @PostMapping("members/homeId/duplicate")
+    public ResponseEntity<Object> checkHomeId(@RequestBody MemberHomeIdReqDto memberHomeIdReqDto) {
+        if (!memberService.checkDuplicateHomeId(memberHomeIdReqDto.getHomeId())) {
+            throw new DuplicateMemberException();
+        }
+        return ResponseEntity.ok().build();
     }
-
-
 }
