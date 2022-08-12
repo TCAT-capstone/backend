@@ -3,13 +3,11 @@ package return_a.tcat.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import return_a.tcat.domain.Member;
 import return_a.tcat.dto.member.MemberCreateDto;
 import return_a.tcat.dto.member.MemberEditReqDto;
-import return_a.tcat.dto.member.MemberEditResDto;
 import return_a.tcat.dto.member.MemberSignUpReqDto;
 import return_a.tcat.exception.ResourceNotFoundException;
 import return_a.tcat.repository.MemberRepository;
@@ -56,7 +54,14 @@ public class MemberService {
     }
 
     public Member findMemberByHomeId(String homeId) {
-        return memberRepository.findByHomeId(homeId);
+        return memberRepository.findByHomeId(homeId).get();
+    }
+
+    public Boolean checkDuplicateHomeId(String homeId) {
+        if(memberRepository.findByHomeId(homeId).isPresent()) {
+            return false;
+        };
+        return true;
     }
 
     public Member findMemberByAuth() {
@@ -70,17 +75,16 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMemberInfo(Long memberId, MemberSignUpReqDto memberSignUpReqDto){
-        Member member=memberRepository.findOne(memberId);
-        member.changeMemberInfo(memberSignUpReqDto.getName(),memberSignUpReqDto.getHomeId(),memberSignUpReqDto.getBio());
+    public void updateMemberInfo(Long memberId, MemberSignUpReqDto memberSignUpReqDto) {
+        Member member = memberRepository.findOne(memberId);
+        member.changeMemberInfo(memberSignUpReqDto.getName(), memberSignUpReqDto.getHomeId());
     }
 
     @Transactional
-    public void updateMemberProfile(Long memberId, MemberEditReqDto memberEditReqDto){
-        Member member=memberRepository.findOne(memberId);
-        member.changeMemberProfile(memberEditReqDto.getName(),memberEditReqDto.getBio());
+    public void updateMemberProfile(Long memberId, MemberEditReqDto memberEditReqDto) {
+        Member member = memberRepository.findOne(memberId);
+        member.changeMemberProfile(memberEditReqDto.getName(), memberEditReqDto.getBio());
     }
-
 
     public UserDetails loadUserById(String id) {
         Member member = memberRepository.findOne(Long.parseLong(id));

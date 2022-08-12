@@ -6,14 +6,12 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class MemberSignUpReqDto {
+public class MemberHomeIdReqDto {
 
-    private String name;
     private String homeId;
 
     @Builder
-    public MemberSignUpReqDto(String name, String homeId) {
-        this.name = name;
+    public MemberHomeIdReqDto(String homeId) {
         this.homeId = homeId;
     }
 }
