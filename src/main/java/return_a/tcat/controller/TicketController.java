@@ -1,6 +1,7 @@
 package return_a.tcat.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import return_a.tcat.dto.ticket.TicketSimpleDto;
 import return_a.tcat.service.TicketService;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,20 @@ public class TicketController {
     @GetMapping("/tickets/trending")
     public ResponseEntity<TicketListResDto> getTrendTickets() {
         List<Ticket> findTickets = ticketService.findTickets();
+        List<TicketSimpleDto> collect = findTickets.stream()
+                .map(t -> new TicketSimpleDto(t))
+                .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(new TicketListResDto(collect));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<TicketListResDto> getSearchTickets(@RequestParam(value="keyword") String keyword,
+                                                             @RequestParam(value="ticketTitle", required = false) String ticketTitle,
+                                                             @RequestParam(value="ticketDate", required = false)
+                                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime ticketDate,
+                                                             @RequestParam(value="ticketSeat", required = false) String ticketSeat,
+                                                             @RequestParam(value="ticketLocation", required = false) String ticketLocation){
+        List<Ticket> findTickets = ticketService.findByKeyword(keyword,ticketTitle,ticketDate,ticketSeat,ticketLocation);
         List<TicketSimpleDto> collect = findTickets.stream()
                 .map(t -> new TicketSimpleDto(t))
                 .collect(Collectors.toList());
