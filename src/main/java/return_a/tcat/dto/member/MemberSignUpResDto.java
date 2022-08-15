@@ -11,10 +11,16 @@ public class MemberSignUpResDto {
 
     private String name;
     private String homeId;
+    private Long ticketbookId;
 
     @Builder
     public MemberSignUpResDto(Member member) {
         this.name = member.getName();
         this.homeId = member.getHomeId();
+    }
+
+    @Builder
+    public void setTicketbookId(Long ticketbookId){
+        this.ticketbookId=ticketbookId;
     }
 }

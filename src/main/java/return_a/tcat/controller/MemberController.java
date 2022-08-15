@@ -8,6 +8,7 @@ import return_a.tcat.domain.Member;
 import return_a.tcat.dto.member.*;
 import return_a.tcat.exception.DuplicateMemberException;
 import return_a.tcat.service.MemberService;
+import return_a.tcat.service.TicketbookService;
 
 
 @RestController
@@ -16,6 +17,7 @@ import return_a.tcat.service.MemberService;
 public class MemberController {
 
     private final MemberService memberService;
+    private final TicketbookService ticketbookService;
 
     @GetMapping("/members/my-profile")
     public ResponseEntity<MemberProfileResDto> myProfile() {
@@ -48,7 +50,10 @@ public class MemberController {
         Member member = memberService.findMemberByAuth();
         Long memberId = member.getId();
         memberService.updateMemberInfo(memberId, memberSignUpReqDto);
-        return ResponseEntity.status(HttpStatus.OK).body(new MemberSignUpResDto(member));
+        MemberSignUpResDto memberSignUpResDto = new MemberSignUpResDto(member);
+        memberSignUpResDto.setTicketbookId(ticketbookService.saveDefault(memberId,"default"));
+
+        return ResponseEntity.status(HttpStatus.OK).body(memberSignUpResDto);
     }
 
     @PostMapping("members/homeId/duplicate")

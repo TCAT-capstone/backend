@@ -33,6 +33,21 @@ public class TicketbookService {
         return ticketbook.getId();
     }
 
+    @Transactional
+    public Long saveDefault(Long memberId, String name) {
+        Member member = memberRepository.findOne(memberId);
+
+        Ticketbook ticketbook = Ticketbook.builder()
+                .name(name)
+                .build();
+
+        ticketbook.setMember(member);
+        ticketbookRepository.save(ticketbook);
+
+        return ticketbook.getId();
+    }
+
+
     public Ticketbook findTicketbook(Long ticketbookId){
         return ticketbookRepository.findOne(ticketbookId);
     }
