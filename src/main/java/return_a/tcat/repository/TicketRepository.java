@@ -1,25 +1,27 @@
 package return_a.tcat.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import return_a.tcat.domain.Ticket;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+
+import static return_a.tcat.domain.QTicket.*;
 
 @Repository
 @RequiredArgsConstructor
 public class TicketRepository {
 
     private final EntityManager em;
+    JPAQueryFactory queryFactory;
 
     public void save(Ticket ticket) {
         em.persist(ticket);
@@ -29,21 +31,53 @@ public class TicketRepository {
         return em.find(Ticket.class, id);
     }
 
-    public List<Ticket> findAll() {
-        return em.createQuery("select t from Ticket t order by t.likeCount desc", Ticket.class)
-                .getResultList();
+    public Page<Ticket> findAll(Integer cursorLikeCount, Long cursorId,Pageable pageable){
+        queryFactory=new JPAQueryFactory(em);
+        List<Ticket> findAllTickets= queryFactory.selectFrom(ticket)
+                .where(currentdate(LocalDateTime.now()),cursorLikeCountAndCursorId(cursorLikeCount,cursorId))
+                .orderBy(ticket.likeCount.desc())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(findAllTickets,pageable,findAllTickets::size);
     }
 
-    public List<Ticket> findByTicketbookId(Long ticketbookId) {
-        return em.createQuery("select t from Ticket t where t.ticketbook.id= :ticketbookId", Ticket.class)
-                .setParameter("ticketbookId", ticketbookId)
-                .getResultList();
+    private BooleanExpression currentdate(LocalDateTime currentdate){
+        return ticket.date.between(currentdate.minusDays(7),currentdate);
     }
 
-    public List<Ticket> findByMemberId(Long memberId) {
-        return em.createQuery("select t from Ticket t where t.member.id= :memberId", Ticket.class)
-                .setParameter("memberId", memberId)
-                .getResultList();
+    private BooleanExpression cursorLikeCountAndCursorId(Integer cursorLikeCount, Long cursorId){
+        if (cursorLikeCount == null || cursorId == null) {
+            return null;
+        }
+
+        return ticket.likeCount.eq(cursorLikeCount)
+                .and(ticket.id.gt(cursorId))
+                .or(ticket.likeCount.lt(cursorLikeCount));
+    }
+
+    public Page<Ticket> findByTicketbookId(Long cursorId,Long ticketbookId,Pageable pageable) {
+        queryFactory=new JPAQueryFactory(em);
+        List<Ticket> findAllTickets= queryFactory.selectFrom(ticket)
+                .where(ticket.ticketbook.id.eq(ticketbookId).and(cursorId(cursorId)))
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(findAllTickets,pageable,findAllTickets::size);
+    }
+
+    private BooleanExpression cursorId(Long cursorId){
+        return cursorId == null ? null : ticket.id.gt(cursorId);
+    }
+
+    public Page<Ticket> findByMemberId(Long cursorId,Long memberId,Pageable pageable) {
+        queryFactory=new JPAQueryFactory(em);
+        List<Ticket> findAllTickets= queryFactory.selectFrom(ticket)
+                .where(ticket.member.id.eq(memberId).and(cursorId(cursorId)))
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(findAllTickets,pageable,findAllTickets::size);
     }
 
     public void deleteById(Long ticketId) {
@@ -51,46 +85,53 @@ public class TicketRepository {
         em.remove(ticket);
     }
 
-    public List<Ticket> findByKeyword(String keyword,
+    public Page<Ticket> findByKeyword(Long cursorId, String keyword,
                                       String ticketTitle, LocalDateTime ticketDate,
-                                      String ticketSeat,String ticketLocation){
+                                      String ticketSeat,String ticketLocation,
+                                      Pageable pageable){
+        queryFactory=new JPAQueryFactory(em);
 
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Ticket> cq=cb.createQuery(Ticket.class);
-        Root<Ticket> t=cq.from(Ticket.class);
+        List<Ticket> findTicketByKeyword = queryFactory.selectFrom(ticket)
+                .where(ticketTitle(ticketTitle),ticketDate(ticketDate),ticketSeat(ticketSeat),ticketLocation(ticketLocation),keywordLike(keyword),cursorId(cursorId))
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        List<Predicate> criteria=new ArrayList<>();
+        return PageableExecutionUtils.getPage(findTicketByKeyword,pageable,findTicketByKeyword::size);
+    }
 
-        if(ticketTitle!=null&&ticketTitle!=""){
-            Predicate ticketTitleInfo=cb.equal(t.get("ticketTitle"),ticketTitle);
-            criteria.add(ticketTitleInfo);
+    private BooleanExpression ticketTitle(String ticketTitle){
+        if (ticketTitle == null || ticketTitle==""){
+            return null;
         }
-        if(ticketDate!=null){
-            Predicate ticketDateInfo=cb.equal(t.get("ticketDate"),ticketDate);
-            criteria.add(ticketDateInfo);
-        }
-        if(ticketSeat!=null&&ticketSeat!=""){
-            Predicate ticketSeatInfo=cb.equal(t.get("ticketSeat"),ticketSeat);
-            criteria.add(ticketSeatInfo);
-        }
-        if(ticketLocation!=null&&ticketLocation!=""){
-            Predicate ticketLocationInfo=cb.equal(t.get("ticketLocation"),ticketLocation);
-            criteria.add(ticketLocationInfo);
-        }
+        return ticket.ticketTitle.eq(ticketTitle);
+    }
 
-        if (StringUtils.hasText(keyword)) {
-            Predicate keywordInfo =
-                    cb.like(t.<String>get("title"), "%" +
-                            keyword+ "%");
-
-            keywordInfo=cb.or(keywordInfo,cb.like(t.<String>get("content"), "%" +
-                    keyword+ "%"));
-
-            criteria.add(keywordInfo);
+    private BooleanExpression ticketDate(LocalDateTime ticketDate){
+        if (ticketDate == null){
+            return null;
         }
-        cq.where(cb.and(criteria.toArray(new Predicate[criteria.size()])));
-        TypedQuery<Ticket> query = em.createQuery(cq).setMaxResults(1000);
-        return query.getResultList();
+        return ticket.ticketDate.eq(ticketDate);
+    }
+
+    private BooleanExpression ticketSeat(String ticketSeat){
+        if (ticketSeat == null || ticketSeat ==""){
+            return null;
+        }
+        return ticket.ticketSeat.eq(ticketSeat);
+    }
+
+    private BooleanExpression ticketLocation(String ticketLocation){
+        if (ticketLocation == null || ticketLocation ==""){
+            return null;
+        }
+        return ticket.ticketLocation.eq(ticketLocation);
+    }
+
+    private BooleanExpression keywordLike(String keyword){
+        if (!StringUtils.hasText(keyword)){
+            return null;
+        }
+        return ticket.title.like("%"+keyword+"%").or(ticket.content.like("%"+keyword+"%"));
     }
 
 }

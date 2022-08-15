@@ -22,9 +22,9 @@ public class TicketbookRepository {
     }
 
     //member의 티켓북 꺼내오기
-    public List<Ticketbook> findByMemberId(Long memberId) {
-        return em.createQuery("select tb from Ticketbook tb where tb.member.id= :memberId",Ticketbook.class)
-                .setParameter("memberId", memberId)
+    public List<Ticketbook> findByHomeId(String homeId) {
+        return em.createQuery("select tb from Ticketbook tb where tb.member.homeId= :homeId",Ticketbook.class)
+                .setParameter("homeId", homeId)
                 .getResultList();
     }
 

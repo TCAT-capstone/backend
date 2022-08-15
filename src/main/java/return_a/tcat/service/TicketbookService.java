@@ -20,8 +20,8 @@ public class TicketbookService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long save(TicketbookReqDto ticketbookDto) {
-        Member member = memberRepository.findOne(ticketbookDto.getMemberId());
+    public Long save(TicketbookReqDto ticketbookDto,Long memberId) {
+        Member member = memberRepository.findOne(memberId);
 
         Ticketbook ticketbook = Ticketbook.builder()
                 .name(ticketbookDto.getName())
@@ -33,12 +33,27 @@ public class TicketbookService {
         return ticketbook.getId();
     }
 
+    @Transactional
+    public Long saveDefault(Long memberId) {
+        Member member = memberRepository.findOne(memberId);
+
+        Ticketbook ticketbook = Ticketbook.builder()
+                .name("default")
+                .ticketbookImg(null)
+                .build();
+
+        ticketbook.setMember(member);
+        ticketbookRepository.save(ticketbook);
+        return ticketbook.getId();
+    }
+
+
     public Ticketbook findTicketbook(Long ticketbookId){
         return ticketbookRepository.findOne(ticketbookId);
     }
 
-    public List<Ticketbook> findTicketbooks(Long memberId) {
-        return ticketbookRepository.findByMemberId(memberId);
+    public List<Ticketbook> findTicketbooks(String homeId) {
+        return ticketbookRepository.findByHomeId(homeId);
     }
 
     @Transactional

@@ -47,8 +47,6 @@ public class Ticket {
     @Column(columnDefinition = "LONGTEXT")
     private String content;
 
-    @Enumerated(EnumType.STRING)
-    private Category category;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
     private List<TicketLike> likes = new ArrayList<>();
@@ -56,7 +54,7 @@ public class Ticket {
     @Builder
     public Ticket(Ticketbook ticketbook, Member member, String ticketImg, TicketValidation ticketValidation,
                   Integer likeCount, String ticketTitle, LocalDateTime ticketDate, String ticketSeat, String ticketLocation,
-                  String casting, String title, String content, LocalDateTime date, Category category) {
+                  String casting, String title, String content, LocalDateTime date) {
         this.ticketbook = ticketbook;
         this.member = member;
         this.ticketImg = ticketImg;
@@ -70,7 +68,6 @@ public class Ticket {
         this.title = title;
         this.content = content;
         this.date = date;
-        this.category = category;
     }
 
     public void changeTicket(TicketReqDto ticketReqDto) {
@@ -97,9 +94,6 @@ public class Ticket {
         }
         if (ticketReqDto.getContent() != null) {
             this.content = ticketReqDto.getContent();
-        }
-        if (ticketReqDto.getCategory() != null) {
-            this.category = ticketReqDto.getCategory();
         }
 
         this.date = LocalDateTime.now();

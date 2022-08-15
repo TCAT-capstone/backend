@@ -33,6 +33,8 @@ public class MemberService {
                 .provider(memberDto.getProvider())
                 .likeCount(0)
                 .ticketCount(0)
+                .defaultTicketbookId(null)
+                .sequence(null)
                 .build();
 
         validateDuplicateMember(member); //중복 회원 검증
@@ -75,9 +77,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMemberInfo(Long memberId, MemberSignUpReqDto memberSignUpReqDto) {
+    public void updateMemberInfo(Long memberId, MemberSignUpReqDto memberSignUpReqDto, Long defaultTicketbookId) {
         Member member = memberRepository.findOne(memberId);
-        member.changeMemberInfo(memberSignUpReqDto.getName(), memberSignUpReqDto.getHomeId());
+        member.changeMemberInfo(memberSignUpReqDto.getName(), memberSignUpReqDto.getHomeId(), defaultTicketbookId);
     }
 
     @Transactional

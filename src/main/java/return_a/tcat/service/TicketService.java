@@ -1,10 +1,14 @@
 package return_a.tcat.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import return_a.tcat.domain.*;
+import return_a.tcat.dto.ticket.TicketListResDto;
 import return_a.tcat.dto.ticket.TicketReqDto;
+import return_a.tcat.dto.ticket.TicketSimpleDto;
 import return_a.tcat.repository.MemberRepository;
 import return_a.tcat.repository.TicketRepository;
 import return_a.tcat.repository.TicketbookRepository;
@@ -26,9 +30,9 @@ public class TicketService {
      * 티켓 저장
      */
     @Transactional
-    public Long save(TicketReqDto ticketDto) {
+    public Long save(TicketReqDto ticketDto, Long memberId) {
 
-        Member member = memberRepository.findOne(ticketDto.getMemberId());
+        Member member = memberRepository.findOne(memberId);
         Ticketbook ticketbook = ticketbookRepository.findOne(ticketDto.getTicketbookId());
 
         Ticket ticket = Ticket.builder()
@@ -45,7 +49,6 @@ public class TicketService {
                 .title(ticketDto.getTitle())
                 .content(ticketDto.getContent())
                 .date(LocalDateTime.now())
-                .category(ticketDto.getCategory())
                 .build();
 
         ticketRepository.save(ticket);
@@ -60,22 +63,58 @@ public class TicketService {
     /**
      * 전체 티켓 조회
      */
-    public List<Ticket> findTickets() {
-        return ticketRepository.findAll();
+    public TicketListResDto findTickets(Integer cursorLikeCount, Long cursorId,Pageable pageable) {
+
+        Page<Ticket> findAllTickets=ticketRepository.findAll(cursorLikeCount, cursorId,pageable);
+        List<Ticket> findTickets=findAllTickets.getContent();
+        List<TicketSimpleDto> collect = findTickets.stream()
+                .map(t -> new TicketSimpleDto(t))
+                .collect(Collectors.toList());
+        TicketListResDto response = new TicketListResDto(collect);
+        if(findAllTickets.getTotalElements()==0){
+            response.setHasNotTicket(true);
+        }
+
+
+        return response;
     }
 
     /**
      * 유저의 티켓 조회
      */
-    public List<Ticket> findMemberTickets(Long memberId) {
-        return ticketRepository.findByMemberId(memberId);
+    public TicketListResDto findMemberTickets(Long cursorId, Long memberId, Pageable pageable) {
+        Page<Ticket> findAllTickets=ticketRepository.findByMemberId(cursorId, memberId, pageable);
+        List<Ticket> findTickets=findAllTickets.getContent();
+        List<TicketSimpleDto> collect = findTickets.stream()
+                .map(t -> new TicketSimpleDto(t))
+                .collect(Collectors.toList());
+        TicketListResDto response = new TicketListResDto(collect);
+        if(findAllTickets.getTotalElements()==0){
+            response.setHasNotTicket(true);
+        }
+
+        return response;
     }
 
     /**
      * 티켓북의 티켓 조회
      */
-    public List<Ticket> findTicketsByTicketbook(Long ticketbookId) {
-        return ticketRepository.findByTicketbookId(ticketbookId);
+    public TicketListResDto findTicketsByTicketbook(Long cursorId, Long ticketbookId,Pageable pageable) {
+        Page<Ticket> findTicketsByTicketbook = ticketRepository.findByTicketbookId(cursorId, ticketbookId,pageable);
+
+        List<Ticket> findTickets=findTicketsByTicketbook.getContent();
+        List<TicketSimpleDto> collect = findTickets.stream()
+                .map(t -> new TicketSimpleDto(t))
+                .collect(Collectors.toList());
+
+        TicketListResDto response = new TicketListResDto(collect);
+
+        if(findTicketsByTicketbook.getTotalElements()==0){
+            response.setHasNotTicket(true);
+        }
+
+
+        return response;
     }
 
     /**
@@ -104,10 +143,25 @@ public class TicketService {
     /**
      * 통합 검색
      */
-    public List<Ticket> findByKeyword(String keyword,
+    public TicketListResDto findByKeyword(Long cursorId,
+                                      String keyword,
                                       String ticketTitle, LocalDateTime ticketDate,
-                                      String ticketSeat,String ticketLocation){
-        return ticketRepository.findByKeyword(keyword,ticketTitle,ticketDate,ticketSeat,ticketLocation);
+                                      String ticketSeat,String ticketLocation,
+                                      Pageable pageable){
+
+        Page<Ticket> findTicketsByKeyword =  ticketRepository.findByKeyword(cursorId, keyword,ticketTitle,ticketDate,ticketSeat,ticketLocation,pageable);
+        List<Ticket> findTickets=findTicketsByKeyword.getContent();
+        List<TicketSimpleDto> collect = findTickets.stream()
+                .map(t -> new TicketSimpleDto(t))
+                .collect(Collectors.toList());
+
+        TicketListResDto response = new TicketListResDto(collect);
+
+        if(findTicketsByKeyword.getTotalElements()==0){
+            response.setHasNotTicket(true);
+        }
+
+        return response;
     }
 
 
