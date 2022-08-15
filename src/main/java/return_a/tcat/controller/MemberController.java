@@ -39,8 +39,10 @@ public class MemberController {
         return new MemberProfileResDto(member);
     }
 
-    @DeleteMapping("/members/{memberId}")
-    public ResponseEntity<Object> deleteMember(@PathVariable("memberId") Long memberId) {
+    @DeleteMapping("/members")
+    public ResponseEntity<Object> deleteMember() {
+        Member member = memberService.findMemberByAuth();
+        Long memberId = member.getId();
         memberService.deleteById(memberId);
         return ResponseEntity.ok().build();
     }
@@ -49,9 +51,9 @@ public class MemberController {
     public ResponseEntity<MemberSignUpResDto> signup(@RequestBody MemberSignUpReqDto memberSignUpReqDto) {
         Member member = memberService.findMemberByAuth();
         Long memberId = member.getId();
-        memberService.updateMemberInfo(memberId, memberSignUpReqDto);
+        Long defaultTicketbookId = ticketbookService.saveDefault(memberId);
+        memberService.updateMemberInfo(memberId, memberSignUpReqDto, defaultTicketbookId);
         MemberSignUpResDto memberSignUpResDto = new MemberSignUpResDto(member);
-        memberSignUpResDto.setTicketbookId(ticketbookService.saveDefault(memberId,"default"));
 
         return ResponseEntity.status(HttpStatus.OK).body(memberSignUpResDto);
     }

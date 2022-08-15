@@ -11,13 +11,7 @@ import org.springframework.util.StringUtils;
 import return_a.tcat.domain.Ticket;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static return_a.tcat.domain.QTicket.*;
@@ -40,12 +34,16 @@ public class TicketRepository {
     public Page<Ticket> findAll(Integer cursorLikeCount, Long cursorId,Pageable pageable){
         queryFactory=new JPAQueryFactory(em);
         List<Ticket> findAllTickets= queryFactory.selectFrom(ticket)
-                .where(cursorLikeCountAndCursorId(cursorLikeCount,cursorId))
+                .where(currentdate(LocalDateTime.now()),cursorLikeCountAndCursorId(cursorLikeCount,cursorId))
                 .orderBy(ticket.likeCount.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         return PageableExecutionUtils.getPage(findAllTickets,pageable,findAllTickets::size);
+    }
+
+    private BooleanExpression currentdate(LocalDateTime currentdate){
+        return ticket.date.between(currentdate.minusDays(7),currentdate);
     }
 
     private BooleanExpression cursorLikeCountAndCursorId(Integer cursorLikeCount, Long cursorId){

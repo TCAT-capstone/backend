@@ -24,6 +24,8 @@ public class Ticketbook {
 
     private String name;
 
+    private String ticketbookImg;
+
     @OneToMany(mappedBy = "ticketbook", cascade = CascadeType.ALL)
     private List<Ticket> tickets = new ArrayList<>();
 
@@ -33,8 +35,9 @@ public class Ticketbook {
     }
 
     @Builder
-    public Ticketbook(String name) {
+    public Ticketbook(String name, String ticketbookImg) {
         this.name = name;
+        this.ticketbookImg = ticketbookImg;
     }
 
 }

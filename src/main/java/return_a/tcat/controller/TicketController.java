@@ -7,11 +7,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import return_a.tcat.domain.Member;
 import return_a.tcat.domain.Ticket;
 import return_a.tcat.dto.ticket.TicketListResDto;
 import return_a.tcat.dto.ticket.TicketDto;
 import return_a.tcat.dto.ticket.TicketReqDto;
 import return_a.tcat.dto.ticket.TicketSimpleDto;
+import return_a.tcat.service.MemberService;
 import return_a.tcat.service.TicketService;
 
 import javax.validation.Valid;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 public class TicketController {
 
     private final TicketService ticketService;
+    private final MemberService memberService;
 
     @GetMapping("/tickets/trending")
     public ResponseEntity<TicketListResDto> getTrendTickets(@RequestParam(value="cursorLikeCount",required = false) Integer cursorLikeCount,
@@ -65,7 +68,9 @@ public class TicketController {
 
     @PostMapping("/tickets")
     public ResponseEntity<TicketDto> saveTicket(@RequestBody @Valid TicketReqDto ticketReqDto) {
-        Long ticketId = ticketService.save(ticketReqDto);
+        Member member = memberService.findMemberByAuth();
+        Long memberId = member.getId();
+        Long ticketId = ticketService.save(ticketReqDto,memberId);
         Ticket ticket = ticketService.findTicket(ticketId);
         return ResponseEntity.status(HttpStatus.CREATED).body(new TicketDto(ticket));
     }

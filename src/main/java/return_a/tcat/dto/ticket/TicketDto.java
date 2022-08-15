@@ -1,7 +1,6 @@
 package return_a.tcat.dto.ticket;
 
 import lombok.Getter;
-import return_a.tcat.domain.Category;
 import return_a.tcat.domain.Ticket;
 import return_a.tcat.domain.TicketValidation;
 
@@ -32,7 +31,6 @@ public class TicketDto {
     private final String content;
     private final LocalDateTime date;
     private final String casting;
-    private final Category category;
 
     public TicketDto(Ticket ticket) {
         ticketId = ticket.getId();
@@ -53,6 +51,5 @@ public class TicketDto {
         content = ticket.getContent();
         date = ticket.getDate();
         casting = ticket.getCasting();
-        category = ticket.getCategory();
     }
 }

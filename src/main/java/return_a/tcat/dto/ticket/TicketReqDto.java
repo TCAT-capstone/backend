@@ -2,7 +2,6 @@ package return_a.tcat.dto.ticket;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import return_a.tcat.domain.Category;
 import return_a.tcat.domain.TicketValidation;
 
 import javax.validation.constraints.NotBlank;
@@ -12,7 +11,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TicketReqDto {
 
-    private Long memberId;
     private Long ticketbookId;
 
     private String ticketImg;
@@ -32,5 +30,4 @@ public class TicketReqDto {
     private String content;
 
     private LocalDateTime date;
-    private Category category;
 }

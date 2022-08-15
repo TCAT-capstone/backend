@@ -30,9 +30,9 @@ public class TicketService {
      * 티켓 저장
      */
     @Transactional
-    public Long save(TicketReqDto ticketDto) {
+    public Long save(TicketReqDto ticketDto, Long memberId) {
 
-        Member member = memberRepository.findOne(ticketDto.getMemberId());
+        Member member = memberRepository.findOne(memberId);
         Ticketbook ticketbook = ticketbookRepository.findOne(ticketDto.getTicketbookId());
 
         Ticket ticket = Ticket.builder()
@@ -49,7 +49,6 @@ public class TicketService {
                 .title(ticketDto.getTitle())
                 .content(ticketDto.getContent())
                 .date(LocalDateTime.now())
-                .category(ticketDto.getCategory())
                 .build();
 
         ticketRepository.save(ticket);
