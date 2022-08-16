@@ -43,13 +43,18 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
-
+        
+      - name: Make zip file
+        run: |
+          mkdir deploy
+          cp ./build/libs/*.jar ./deploy/
+          zip -r -qq -j ./spring-build.zip ./deploy
+        
       - name: Deploy
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           aws s3 cp \
-            --recursive \
             --region ap-northeast-2 \
-            ./build/libs s3://tcat-spring
+            ./spring-build.zip s3://tcat-spring
