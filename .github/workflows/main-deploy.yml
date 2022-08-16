@@ -52,4 +52,4 @@ jobs:
           aws s3 cp \
             --recursive \
             --region ap-northeast-2 \
-            build/libs/tcat-0.0.1-SNAPSHOT.jar s3://tcat-spring/app.jar
+            ./build/libs s3://tcat-spring
