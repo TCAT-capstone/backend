@@ -29,10 +29,14 @@ public class MemberRepository {
                 .getResultList();
     }
 
-    public Member findByHomeId(String homeId) {
-        return em.createQuery("select m from Member m where m.homeId = :homeId", Member.class)
-                .setParameter("homeId", homeId)
-                .getSingleResult();
+    public Optional<Member> findByHomeId(String homeId) {
+        try {
+            return Optional.ofNullable(em.createQuery("select m from Member m where m.homeId = :homeId", Member.class)
+                    .setParameter("homeId", homeId)
+                    .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<Member> findByEmail(String email) {

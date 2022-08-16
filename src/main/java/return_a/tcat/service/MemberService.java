@@ -3,11 +3,12 @@ package return_a.tcat.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import return_a.tcat.domain.Member;
 import return_a.tcat.dto.member.MemberCreateDto;
+import return_a.tcat.dto.member.MemberEditReqDto;
+import return_a.tcat.dto.member.MemberSignUpReqDto;
 import return_a.tcat.exception.ResourceNotFoundException;
 import return_a.tcat.repository.MemberRepository;
 import return_a.tcat.security.UserPrincipal;
@@ -32,6 +33,8 @@ public class MemberService {
                 .provider(memberDto.getProvider())
                 .likeCount(0)
                 .ticketCount(0)
+                .defaultTicketbookId(null)
+                .sequence(null)
                 .build();
 
         validateDuplicateMember(member); //중복 회원 검증
@@ -53,7 +56,14 @@ public class MemberService {
     }
 
     public Member findMemberByHomeId(String homeId) {
-        return memberRepository.findByHomeId(homeId);
+        return memberRepository.findByHomeId(homeId).get();
+    }
+
+    public Boolean checkDuplicateHomeId(String homeId) {
+        if(memberRepository.findByHomeId(homeId).isPresent()) {
+            return false;
+        };
+        return true;
     }
 
     public Member findMemberByAuth() {
@@ -66,19 +76,17 @@ public class MemberService {
         memberRepository.deleteById(memberId);
     }
 
-//    @Transactional
-//    public String updateMemberName(Long memberId,MemberReqDto memberReqDto){
-//        Member member=memberRepository.findOne(memberId);
-//        member.changeMemberName(memberReqDto.getName());
-//        return member.getName();
-//    }
-//
-//    @Transactional
-//    public String updateMemberBio(Long memberId,MemberReqDto memberReqDto){
-//        Member member=memberRepository.findOne(memberId);
-//        member.changeMemberBio(memberReqDto.getBio());
-//        return member.getBio();
-//    }
+    @Transactional
+    public void updateMemberInfo(Long memberId, MemberSignUpReqDto memberSignUpReqDto, Long defaultTicketbookId) {
+        Member member = memberRepository.findOne(memberId);
+        member.changeMemberInfo(memberSignUpReqDto.getName(), memberSignUpReqDto.getHomeId(), defaultTicketbookId);
+    }
+
+    @Transactional
+    public void updateMemberProfile(Long memberId, MemberEditReqDto memberEditReqDto) {
+        Member member = memberRepository.findOne(memberId);
+        member.changeMemberProfile(memberEditReqDto.getName(), memberEditReqDto.getBio());
+    }
 
     public UserDetails loadUserById(String id) {
         Member member = memberRepository.findOne(Long.parseLong(id));

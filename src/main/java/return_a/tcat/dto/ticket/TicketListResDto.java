@@ -8,6 +8,11 @@ import java.util.List;
 public class TicketListResDto {
 
     private List<TicketSimpleDto> tickets;
+    private Boolean hasNotTicket;
+
+    public void setHasNotTicket(Boolean hasNotTicket) {
+        this.hasNotTicket = hasNotTicket;
+    }
 
     public TicketListResDto(List<TicketSimpleDto> tickets) {
         this.tickets = tickets;

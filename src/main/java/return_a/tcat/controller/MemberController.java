@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import return_a.tcat.domain.Member;
-import return_a.tcat.dto.member.MemberProfileResDto;
+import return_a.tcat.dto.member.*;
+import return_a.tcat.exception.DuplicateMemberException;
 import return_a.tcat.service.MemberService;
+import return_a.tcat.service.TicketbookService;
 
 
 @RestController
@@ -15,11 +17,20 @@ import return_a.tcat.service.MemberService;
 public class MemberController {
 
     private final MemberService memberService;
+    private final TicketbookService ticketbookService;
 
     @GetMapping("/members/my-profile")
     public ResponseEntity<MemberProfileResDto> myProfile() {
         Member member = memberService.findMemberByAuth();
         return ResponseEntity.status(HttpStatus.OK).body(new MemberProfileResDto(member));
+    }
+
+    @PatchMapping("members/my-profile")
+    public ResponseEntity<MemberEditResDto> updateMyProfile(@RequestBody MemberEditReqDto memberEditReqDto) {
+        Member member = memberService.findMemberByAuth();
+        Long memberId = member.getId();
+        memberService.updateMemberProfile(memberId, memberEditReqDto);
+        return ResponseEntity.status(HttpStatus.OK).body(new MemberEditResDto(member));
     }
 
     @GetMapping("/members/{homeId}/profile")
@@ -28,24 +39,30 @@ public class MemberController {
         return new MemberProfileResDto(member);
     }
 
-    @DeleteMapping("/members/{memberId}")
-    public ResponseEntity<Object> deleteMember(@PathVariable("memberId") Long memberId) {
+    @DeleteMapping("/members")
+    public ResponseEntity<Object> deleteMember() {
+        Member member = memberService.findMemberByAuth();
+        Long memberId = member.getId();
         memberService.deleteById(memberId);
         return ResponseEntity.ok().build();
     }
 
-//    @PatchMapping("members/{memberId}/name")
-//    public ResponseEntity<String> updateMemberName(@RequestBody MemberReqDto memberReqDto, @PathVariable("memberId") Long memberId) {
-//
-//        String name = memberService.updateMemberName(memberId, memberReqDto);
-//        return ResponseEntity.status(HttpStatus.OK).body(name);
-//    }
-//
-//    @PatchMapping("members/{memberId}/bio")
-//    public ResponseEntity<String> updateMemberBio(@RequestBody MemberReqDto memberReqDto, @PathVariable("memberId") Long memberId) {
-//
-//        String bio = memberService.updateMemberBio(memberId, memberReqDto);
-//        return ResponseEntity.status(HttpStatus.OK).body(bio);
-//    }
+    @PatchMapping("members/signup")
+    public ResponseEntity<MemberSignUpResDto> signup(@RequestBody MemberSignUpReqDto memberSignUpReqDto) {
+        Member member = memberService.findMemberByAuth();
+        Long memberId = member.getId();
+        Long defaultTicketbookId = ticketbookService.saveDefault(memberId);
+        memberService.updateMemberInfo(memberId, memberSignUpReqDto, defaultTicketbookId);
+        MemberSignUpResDto memberSignUpResDto = new MemberSignUpResDto(member);
 
+        return ResponseEntity.status(HttpStatus.OK).body(memberSignUpResDto);
+    }
+
+    @PostMapping("members/homeId/duplicate")
+    public ResponseEntity<Object> checkHomeId(@RequestBody MemberHomeIdReqDto memberHomeIdReqDto) {
+        if (!memberService.checkDuplicateHomeId(memberHomeIdReqDto.getHomeId())) {
+            throw new DuplicateMemberException();
+        }
+        return ResponseEntity.ok().build();
+    }
 }

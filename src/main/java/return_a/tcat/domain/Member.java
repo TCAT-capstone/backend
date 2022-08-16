@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import return_a.tcat.dto.member.MemberSignUpReqDto;
 
 
 import javax.persistence.*;
@@ -38,6 +39,9 @@ public class Member {
     private Integer likeCount;
     private Integer ticketCount;
 
+    private Long defaultTicketbookId;
+    private String sequence;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Ticketbook> ticketbooks = new ArrayList<>();
 
@@ -49,7 +53,7 @@ public class Member {
 
     @Builder
     public Member(String homeId, String name, String bio, String memberImg, String email, AuthProvider provider,
-                  Integer likeCount, Integer ticketCount) {
+                  Integer likeCount, Integer ticketCount,Long defaultTicketbookId, String sequence) {
         this.homeId = homeId;
         this.name = name;
         this.bio = bio;
@@ -58,15 +62,26 @@ public class Member {
         this.provider = provider;
         this.likeCount = likeCount;
         this.ticketCount = ticketCount;
+        this.defaultTicketbookId = defaultTicketbookId;
+        this.sequence = sequence;
     }
 
-    public void changeMemberName(String name) {
+    public void changeMemberInfo(String name, String homeId, Long defaultTicketbookId) {
         this.name = name;
+        this.homeId = homeId;
+        this.defaultTicketbookId = defaultTicketbookId;
     }
 
-    public void changeMemberBio(String bio) {
+    public void changeMemberProfile(String name, String bio) {
+        this.name = name;
         this.bio = bio;
+
     }
+
+    public void changeTicketbookSequence(String sequence){
+        this.sequence = sequence;
+    }
+
 
     /**
      * 좋아요 받은수 증가
@@ -80,5 +95,26 @@ public class Member {
      */
     public void subtractLikeCount() {
         this.likeCount--;
+    }
+
+    /**
+     * 티켓수 증가
+     */
+    public void addTicketCount() {
+        this.ticketCount++;
+    }
+
+    /**
+     * 티켓수 감소
+     */
+    public void subtractTicketCount() {
+        this.ticketCount--;
+    }
+
+    /**
+     * 티켓 삭제시 member 총 좋아요수 감소
+     */
+    public void subtractTotalLikeCount(Integer count) {
+        this.likeCount -= count;
     }
 }

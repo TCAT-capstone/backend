@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 public class TicketbookReqDto {
 
     private Long id;
-    private Long memberId;
     private String name;
+    private String ticketbookImg;
 }
