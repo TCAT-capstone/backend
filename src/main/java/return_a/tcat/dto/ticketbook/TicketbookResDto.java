@@ -8,11 +8,12 @@ import java.util.Iterator;
 import java.util.List;
 
 @Getter
-public class TicketbookListResDto {
+public class TicketbookResDto {
 
     private List<TicketbookDto> ticketbooks;
+    private String sequence;
 
-    public void sortTicketbooks(String sequence) {
+    public List<TicketbookDto> sortTicketbooks(List<TicketbookDto> ticketbooks, String sequence) {
         String[] sequenceArray = sequence.split(",");
         List<String> sequenceList = new ArrayList<>(Arrays.asList(sequenceArray));
 
@@ -30,10 +31,13 @@ public class TicketbookListResDto {
             }
         }
 
-        this.ticketbooks =results;
+        return results;
+
     }
 
-    public TicketbookListResDto(List<TicketbookDto> ticketbooks) {
-        this.ticketbooks = ticketbooks;
+    public TicketbookResDto(List<TicketbookDto> ticketbooks, String sequence) {
+        this.ticketbooks = sortTicketbooks(ticketbooks, sequence);
+        this.sequence = sequence;
     }
+
 }

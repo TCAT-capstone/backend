@@ -1,16 +1,18 @@
 package return_a.tcat.dto.ticketbook;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 
 @Getter
 @NoArgsConstructor
 public class TicketbookReqDto {
 
-    private Long id;
-    private String name;
-    private String ticketbookImg;
+    private String sequence;
+    private List<TicketbookDto> append;
+    private List<TicketbookDto> update;
+    private List<TicketbookDto> delete;
+
 }

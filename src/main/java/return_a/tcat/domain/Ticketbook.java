@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import return_a.tcat.dto.ticketbook.TicketbookDto;
+import return_a.tcat.dto.ticketbook.TicketbookReqDto;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class Ticketbook {
     private String name;
 
     private String ticketbookImg;
+    private String description;
 
     @OneToMany(mappedBy = "ticketbook", cascade = CascadeType.ALL)
     private List<Ticket> tickets = new ArrayList<>();
@@ -35,9 +38,28 @@ public class Ticketbook {
     }
 
     @Builder
-    public Ticketbook(String name, String ticketbookImg) {
+    public Ticketbook(String name, String ticketbookImg, String description) {
         this.name = name;
         this.ticketbookImg = ticketbookImg;
+        this.description = description;
     }
+
+    public void changeTicketbook(TicketbookDto ticketbookDto) {
+
+        if (ticketbookDto.getName() != null) {
+            this.name = ticketbookDto.getName();
+        }
+
+        if (ticketbookDto.getTicketbookImg() != null) {
+            this.ticketbookImg = ticketbookDto.getTicketbookImg();
+        }
+
+        if(ticketbookDto.getDescription() != null) {
+            this.description = ticketbookDto.getDescription();
+        }
+
+
+    }
+
 
 }

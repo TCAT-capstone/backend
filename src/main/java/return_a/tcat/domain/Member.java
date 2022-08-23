@@ -4,11 +4,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import return_a.tcat.dto.member.MemberSignUpReqDto;
-
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -53,7 +53,7 @@ public class Member {
 
     @Builder
     public Member(String homeId, String name, String bio, String memberImg, String email, AuthProvider provider,
-                  Integer likeCount, Integer ticketCount,Long defaultTicketbookId, String sequence) {
+                  Integer likeCount, Integer ticketCount, Long defaultTicketbookId, String sequence) {
         this.homeId = homeId;
         this.name = name;
         this.bio = bio;
@@ -78,8 +78,23 @@ public class Member {
 
     }
 
-    public void changeTicketbookSequence(String sequence){
-        this.sequence = sequence;
+    public void changeTicketbookSequence(String sequence) {
+        if (sequence != null) {
+            this.sequence = sequence;
+        }
+    }
+
+    public void replaceTicketbookSequence(Long tempId, Long ticketbookId) {
+
+        this.sequence = sequence.replace(tempId.toString(),ticketbookId.toString());
+
+    }
+
+    public void removeTicketbookSequence(Long ticketbookId) {
+        String[] sequenceArray = sequence.split(",");
+        List<String> sequenceList = new ArrayList<>(Arrays.asList(sequenceArray));
+        sequenceList.remove(ticketbookId.toString());
+        this.sequence = StringUtils.join(sequenceList,",");
     }
 
 
