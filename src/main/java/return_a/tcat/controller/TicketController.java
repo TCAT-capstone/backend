@@ -32,7 +32,7 @@ public class TicketController {
     @GetMapping("/tickets/trending")
     public ResponseEntity<TicketListResDto> getTrendTickets(@RequestParam(value="cursorLikeCount",required = false) Integer cursorLikeCount,
                                                             @RequestParam(value="cursorId",required = false) Long cursorId,
-                                                            @PageableDefault(size = 10) Pageable pageable) {
+                                                            @PageableDefault(size = 12) Pageable pageable) {
         TicketListResDto ticketListResDto = ticketService.findTickets(cursorLikeCount, cursorId,pageable);
         return ResponseEntity.status(HttpStatus.OK).body(ticketListResDto);
     }
@@ -45,7 +45,7 @@ public class TicketController {
                                                                  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime ticketDate,
                                                              @RequestParam(value="ticketSeat", required = false) String ticketSeat,
                                                              @RequestParam(value="ticketLocation", required = false) String ticketLocation,
-                                                             @PageableDefault(size = 10) Pageable pageable){
+                                                             @PageableDefault(size = 12) Pageable pageable){
         TicketListResDto ticketListResDto = ticketService.findByKeyword(cursorId,keyword,ticketTitle,ticketDate,ticketSeat,ticketLocation,pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(ticketListResDto);
@@ -54,7 +54,7 @@ public class TicketController {
     @GetMapping("/ticketbooks/{ticketbookId}/tickets")
     public ResponseEntity<TicketListResDto> getTicketbookTickets(@RequestParam(value="cursorId",required = false) Long cursorId,
                                                                  @PathVariable("ticketbookId") Long ticketbookId,
-                                                                 @PageableDefault(size = 10) Pageable pageable) {
+                                                                 @PageableDefault(size = 12) Pageable pageable) {
         TicketListResDto ticketListResDto = ticketService.findTicketsByTicketbook(cursorId, ticketbookId, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(ticketListResDto);
     }
