@@ -14,22 +14,23 @@ public class TicketbookRepository {
 
     private final EntityManager em;
 
-    public void save(Ticketbook ticketbook){
+    public void save(Ticketbook ticketbook) {
         em.persist(ticketbook);
     }
+
     public Ticketbook findOne(Long id) {
         return em.find(Ticketbook.class, id);
     }
 
     //member의 티켓북 꺼내오기
     public List<Ticketbook> findByHomeId(String homeId) {
-        return em.createQuery("select tb from Ticketbook tb where tb.member.homeId= :homeId",Ticketbook.class)
+        return em.createQuery("select tb from Ticketbook tb where tb.member.homeId= :homeId", Ticketbook.class)
                 .setParameter("homeId", homeId)
                 .getResultList();
     }
 
-    public void deleteById(Long id){
-        Ticketbook ticketbook=em.find(Ticketbook.class,id);
+    public void deleteById(Long id) {
+        Ticketbook ticketbook = em.find(Ticketbook.class, id);
         em.remove(ticketbook);
     }
 }

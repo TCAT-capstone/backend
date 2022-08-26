@@ -9,6 +9,7 @@ import return_a.tcat.domain.Ticketbook;
 import return_a.tcat.dto.ticketbook.TicketbookListResDto;
 import return_a.tcat.dto.ticketbook.TicketbookDto;
 import return_a.tcat.dto.ticketbook.TicketbookReqDto;
+import return_a.tcat.dto.ticketbook.TicketbookResDto;
 import return_a.tcat.service.MemberService;
 import return_a.tcat.service.TicketbookService;
 
@@ -25,29 +26,32 @@ public class TicketbookController {
     private final MemberService memberService;
 
     @GetMapping("/members/{homeId}/ticketbooks")
-    public ResponseEntity<TicketbookListResDto> findTicketbooks(@PathVariable("homeId") String homeId){
+    public ResponseEntity<TicketbookListResDto> findTicketbooks(@PathVariable("homeId") String homeId) {
+        Member member = memberService.findMemberByHomeId(homeId);
         List<Ticketbook> findTicketbooks = ticketbookService.findTicketbooks(homeId);
         //엔티티 -> DTO 변환
         List<TicketbookDto> collect = findTicketbooks.stream()
                 .map(t -> new TicketbookDto(t))
                 .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(new TicketbookListResDto(collect));
+        TicketbookListResDto resultList = new TicketbookListResDto(collect);
+        resultList.sortTicketbooks(member.getSequence());
+
+        return ResponseEntity.status(HttpStatus.OK).body(resultList);
     }
 
-    @PostMapping("/ticketbooks")
-    public ResponseEntity<TicketbookDto> saveTicketbook(@RequestBody @Valid TicketbookReqDto ticketbookReqDto){
+    @PutMapping("/ticketbooks")
+    public ResponseEntity<TicketbookResDto> manageTicketbook(@RequestBody @Valid TicketbookReqDto ticketbookReqDto) {
         Member member = memberService.findMemberByAuth();
         Long memberId = member.getId();
-        Long ticketbookId=ticketbookService.save(ticketbookReqDto, memberId);
-        Ticketbook ticketbook=ticketbookService.findTicketbook(ticketbookId);
+        member.changeTicketbookSequence(ticketbookReqDto.getSequence());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new TicketbookDto(ticketbook));
-    }
+        List<Ticketbook> ticketbooks = ticketbookService.manageTicketbook(ticketbookReqDto, memberId);
 
-    @DeleteMapping("/ticketbooks/{ticketbookId}")
-    public ResponseEntity<Object> deleteTicketbook(@PathVariable("ticketbookId") Long ticketbookId){
-        ticketbookService.deleteById(ticketbookId);
-        return ResponseEntity.ok().build();
+        List<TicketbookDto> collect = ticketbooks.stream()
+                .map(t -> new TicketbookDto(t))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new TicketbookResDto(collect, member.getSequence()));
     }
 
 }
