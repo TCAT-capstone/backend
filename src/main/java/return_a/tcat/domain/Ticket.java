@@ -70,7 +70,11 @@ public class Ticket {
         this.date = date;
     }
 
-    public void changeTicket(TicketReqDto ticketReqDto) {
+    public void changeTicket(TicketReqDto ticketReqDto,Ticketbook ticketbook) {
+
+        if (ticketReqDto.getTicketbookId() != null) {
+            this.ticketbook = ticketbook;
+        }
 
         if (ticketReqDto.getTicketImg() != null) {
             this.ticketImg = ticketReqDto.getTicketImg();
