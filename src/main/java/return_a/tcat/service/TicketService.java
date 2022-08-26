@@ -136,7 +136,14 @@ public class TicketService {
     @Transactional
     public Ticket updateTicket(Long ticketId, TicketReqDto ticketReqDto) {
         Ticket ticket = ticketRepository.findOne(ticketId);
-        ticket.changeTicket(ticketReqDto);
+        Ticketbook ticketbook = null;
+
+        if (ticketReqDto.getTicketbookId() != null) {
+            ticketbook = ticketbookRepository.findOne(ticketReqDto.getTicketbookId());
+        }
+
+        ticket.changeTicket(ticketReqDto, ticketbook);
+
         return ticket;
     }
 
