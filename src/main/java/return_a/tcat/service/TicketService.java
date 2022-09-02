@@ -130,6 +130,17 @@ public class TicketService {
         ticketRepository.deleteById(ticketId);
     }
 
+    public Boolean checkTicketOwner(Long memberId, Long ticketId) {
+        Ticket ticket = ticketRepository.findOne(ticketId);
+        Member member = ticket.getMember();
+        if(memberId.equals(member.getId())){
+            return true;
+        }
+
+        return false;
+
+    }
+
     /**
      * 티켓 수정
      */

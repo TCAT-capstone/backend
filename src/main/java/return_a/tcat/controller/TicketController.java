@@ -13,6 +13,7 @@ import return_a.tcat.dto.ticket.TicketListResDto;
 import return_a.tcat.dto.ticket.TicketDto;
 import return_a.tcat.dto.ticket.TicketReqDto;
 import return_a.tcat.dto.ticket.TicketSimpleDto;
+import return_a.tcat.exception.NotOwnerException;
 import return_a.tcat.service.MemberService;
 import return_a.tcat.service.TicketService;
 
@@ -78,6 +79,11 @@ public class TicketController {
 
     @DeleteMapping("/tickets/{ticketId}")
     public ResponseEntity<Object> deleteTicket(@PathVariable Long ticketId) {
+        Member member = memberService.findMemberByAuth();
+        Long memberId = member.getId();
+        if(!ticketService.checkTicketOwner(memberId, ticketId)){
+            throw new NotOwnerException();
+        }
         ticketService.deleteById(ticketId);
         return ResponseEntity.ok().build();
     }
