@@ -17,11 +17,19 @@ public class TicketLikeController {
     private final TicketLikeService ticketLikeService;
     private final MemberService memberService;
 
-    @PostMapping("/tickets/{ticketId}/like")
-    public ResponseEntity<TicketLikeResDto> updateLike(@PathVariable("ticketId") Long ticketId){
+    @GetMapping("/tickets/{ticketId}/like")
+    public ResponseEntity<TicketLikeResDto> getLike(@PathVariable("ticketId") Long ticketId) {
         Member member = memberService.findMemberByAuth();
         Long memberId = member.getId();
 
-        return ResponseEntity.ok().body(ticketLikeService.likes(memberId,ticketId));
+        return ResponseEntity.ok().body(ticketLikeService.getLike(memberId, ticketId));
+    }
+
+    @PostMapping("/tickets/{ticketId}/like")
+    public ResponseEntity<TicketLikeResDto> updateLike(@PathVariable("ticketId") Long ticketId) {
+        Member member = memberService.findMemberByAuth();
+        Long memberId = member.getId();
+
+        return ResponseEntity.ok().body(ticketLikeService.likes(memberId, ticketId));
     }
 }
