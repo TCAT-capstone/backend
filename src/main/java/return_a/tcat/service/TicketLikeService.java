@@ -25,9 +25,9 @@ public class TicketLikeService {
      */
     public TicketLikeResDto likes(Long memberId, Long ticketId){
 
-        Member member=memberRepository.findOne(memberId); //like를 누른 회원
-        Ticket ticket=ticketRepository.findOne(ticketId); //like당하는 티켓
-        Long hostmemberId=ticket.getMember().getId(); //그 티켓의 주인인 회원
+        Member member=memberRepository.findOne(memberId);
+        Ticket ticket=ticketRepository.findOne(ticketId);
+        Long hostmemberId=ticket.getMember().getId();
         Member hostmember=memberRepository.findOne(hostmemberId);
 
         TicketLikeResDto ticketLikeResDto;
@@ -44,6 +44,22 @@ public class TicketLikeService {
             ticket.subtractLikeCount();
             hostmember.subtractLikeCount();
             ticketLikeResDto = new TicketLikeResDto(false,ticket.getLikeCount());
+        }
+
+        return ticketLikeResDto;
+    }
+
+    public TicketLikeResDto getLike(Long memberId, Long ticketId){
+        Member member=memberRepository.findOne(memberId);
+        Ticket ticket=ticketRepository.findOne(ticketId);
+
+        TicketLikeResDto ticketLikeResDto;
+
+        if(isNotAlreadyLike(member,ticket)){
+            ticketLikeResDto = new TicketLikeResDto(false,ticket.getLikeCount());
+        }
+        else{
+            ticketLikeResDto = new TicketLikeResDto(true,ticket.getLikeCount());
         }
 
         return ticketLikeResDto;
