@@ -12,7 +12,6 @@ public class TicketDto {
     private final Long ticketId;
     private final Long ticketbookId;
 
-    private final Long memberId;
     private final String memberHomeId;
     private final String memberImg;
     private final String memberName;
@@ -20,7 +19,6 @@ public class TicketDto {
 
     private final String ticketImg;
     private final TicketValidation ticketValidation;
-    private final Integer likeCount;
 
     private final String ticketTitle;
     private final LocalDateTime ticketDate;
@@ -35,14 +33,12 @@ public class TicketDto {
     public TicketDto(Ticket ticket) {
         ticketId = ticket.getId();
         ticketbookId = ticket.getTicketbook().getId();
-        memberId = ticket.getMember().getId();
         memberHomeId = ticket.getMember().getHomeId();
         memberImg = ticket.getMember().getMemberImg();
         memberName = ticket.getMember().getName();
         memberBio = ticket.getMember().getBio();
         ticketImg = ticket.getTicketImg();
         ticketValidation = ticket.getTicketValidation();
-        likeCount = ticket.getLikeCount();
         ticketTitle = ticket.getTicketTitle();
         ticketDate = ticket.getTicketDate();
         ticketSeat = ticket.getTicketSeat();

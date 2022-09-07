@@ -35,7 +35,7 @@ public class TicketRepository {
         queryFactory=new JPAQueryFactory(em);
         List<Ticket> findAllTickets= queryFactory.selectFrom(ticket)
                 .where(currentdate(LocalDateTime.now()),cursorLikeCountAndCursorId(cursorLikeCount,cursorId))
-                .orderBy(ticket.likeCount.desc())
+                .orderBy(ticket.likeCount.desc(),ticket.id.asc())
                 .limit(pageable.getPageSize())
                 .fetch();
 

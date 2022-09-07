@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import return_a.tcat.domain.Member;
 import return_a.tcat.domain.Ticket;
 import return_a.tcat.domain.TicketLike;
+import return_a.tcat.dto.like.TicketLikeResDto;
 import return_a.tcat.repository.MemberRepository;
 import return_a.tcat.repository.TicketLikeRepository;
 import return_a.tcat.repository.TicketRepository;
@@ -22,28 +23,46 @@ public class TicketLikeService {
     /**
      *좋아요 누르기
      */
-    public boolean likes(Long memberId, Long ticketId){
+    public TicketLikeResDto likes(Long memberId, Long ticketId){
 
-        Member member=memberRepository.findOne(memberId); //like를 누른 회원
-        Ticket ticket=ticketRepository.findOne(ticketId); //like당하는 티켓
-        Long hostmemberId=ticket.getMember().getId(); //그 티켓의 주인인 회원
+        Member member=memberRepository.findOne(memberId);
+        Ticket ticket=ticketRepository.findOne(ticketId);
+        Long hostmemberId=ticket.getMember().getId();
         Member hostmember=memberRepository.findOne(hostmemberId);
+
+        TicketLikeResDto ticketLikeResDto;
 
         if(isNotAlreadyLike(member,ticket)){
             ticketLikeRepository.save(new TicketLike(member,ticket));
             ticket.addLikeCount();
             hostmember.addLikeCount();
-            return true;
+            ticketLikeResDto = new TicketLikeResDto(true,ticket.getLikeCount());
         }
 
         else{
             ticketLikeRepository.deleteLike(member,ticket);
             ticket.subtractLikeCount();
             hostmember.subtractLikeCount();
-            return false;
+            ticketLikeResDto = new TicketLikeResDto(false,ticket.getLikeCount());
         }
 
+        return ticketLikeResDto;
+    }
 
+    public TicketLikeResDto getLike(Long memberId, Long ticketId){
+        Member member=memberRepository.findOne(memberId);
+        Ticket ticket=ticketRepository.findOne(ticketId);
+
+        TicketLikeResDto ticketLikeResDto;
+
+        if(isNotAlreadyLike(member,ticket)){
+            ticketLikeResDto = new TicketLikeResDto(false,ticket.getLikeCount());
+        }
+        else{
+            ticketLikeResDto = new TicketLikeResDto(true,ticket.getLikeCount());
+        }
+
+        return ticketLikeResDto;
     }
 
     private boolean isNotAlreadyLike(Member member, Ticket ticket){
