@@ -50,10 +50,16 @@ public class TicketLikeService {
     }
 
     public TicketLikeResDto getLike(Long memberId, Long ticketId){
-        Member member=memberRepository.findOne(memberId);
+        TicketLikeResDto ticketLikeResDto;
         Ticket ticket=ticketRepository.findOne(ticketId);
 
-        TicketLikeResDto ticketLikeResDto;
+        if(memberId.equals(null))
+        {
+            ticketLikeResDto = new TicketLikeResDto(false,ticket.getLikeCount());
+            return ticketLikeResDto;
+        }
+
+        Member member=memberRepository.findOne(memberId);
 
         if(isNotAlreadyLike(member,ticket)){
             ticketLikeResDto = new TicketLikeResDto(false,ticket.getLikeCount());
@@ -61,7 +67,6 @@ public class TicketLikeService {
         else{
             ticketLikeResDto = new TicketLikeResDto(true,ticket.getLikeCount());
         }
-
         return ticketLikeResDto;
     }
 

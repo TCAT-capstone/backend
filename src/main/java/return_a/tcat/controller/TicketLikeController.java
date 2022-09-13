@@ -19,10 +19,13 @@ public class TicketLikeController {
 
     @GetMapping("/tickets/{ticketId}/like")
     public ResponseEntity<TicketLikeResDto> getLike(@PathVariable("ticketId") Long ticketId) {
-        Member member = memberService.findMemberByAuth();
-        Long memberId = member.getId();
-
-        return ResponseEntity.ok().body(ticketLikeService.getLike(memberId, ticketId));
+        if(memberService.checkMemberByAuth()) {
+            Member member = memberService.findMemberByAuth();
+            Long memberId = member.getId();
+            return ResponseEntity.ok().body(ticketLikeService.getLike(memberId, ticketId));
+        }
+        else
+            return ResponseEntity.ok().body(ticketLikeService.getLike(null, ticketId));
     }
 
     @PostMapping("/tickets/{ticketId}/like")

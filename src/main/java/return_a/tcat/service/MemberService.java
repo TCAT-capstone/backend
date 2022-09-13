@@ -66,6 +66,14 @@ public class MemberService {
         return true;
     }
 
+    public Boolean checkMemberByAuth(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(email.equals("anonymousUser"))
+            return false;
+        else
+            return true;
+    }
+
     public Member findMemberByAuth() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return memberRepository.findByEmail(email).get();
