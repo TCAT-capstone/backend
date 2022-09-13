@@ -20,16 +20,16 @@ public class Follows {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String homeId;
+    private String targetHomeId;
 
     public void setMember(Member member) {
         this.member = member;
         member.getFollows().add(this);
     }
     @Builder
-    public Follows(Member member, String homeId) {
+    public Follows(Member member, String targetHomeId) {
         this.member = member;
-        this.homeId = homeId;
+        this.targetHomeId = targetHomeId;
 
     }
 }

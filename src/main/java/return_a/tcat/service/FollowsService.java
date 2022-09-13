@@ -25,7 +25,7 @@ public class FollowsService {
         Member member = memberRepository.findByHomeId(homeId).get();
         List<Follows> findFollows= followsRepository.findFollowing(member.getId());
         List<FollowsDto> collect = findFollows.stream()
-                .map(f -> new FollowsDto(memberRepository.findByHomeId(f.getHomeId()).get()))
+                .map(f -> new FollowsDto(memberRepository.findByHomeId(f.getTargetHomeId()).get()))
                 .collect(Collectors.toList());
         return new FollowsListResDto(collect);
     }
@@ -39,13 +39,26 @@ public class FollowsService {
     }
 
     @Transactional
-    public void save(Long memberId, String homeId){
+    public void save(Long memberId, String targetHomeId){
         Member member = memberRepository.findOne(memberId);
         Follows follows = Follows.builder()
                         .member(member)
-                        .homeId(homeId)
+                        .targetHomeId(targetHomeId)
                         .build();
-
+        validateDuplicateFollow(follows);
         followsRepository.save(follows);
+    }
+
+    private void validateDuplicateFollow(Follows follows) {
+        List<Follows> findFollows =
+                followsRepository.findFollows(follows.getMember().getId(),follows.getTargetHomeId());
+        if (!findFollows.isEmpty()) {
+            throw new IllegalStateException("이미 구독한 회원입니다.");
+        }
+    }
+
+    @Transactional
+    public void delete(Long memberId, String targetHomeId){
+        followsRepository.delete(memberId,targetHomeId);
     }
 }

@@ -6,13 +6,13 @@ import return_a.tcat.domain.Member;
 @Getter
 public class FollowsDto {
 
-    private final String homeId;
+    private final String targetHomeId;
     private final String name;
     private final String memberImg;
     private final String bio;
 
     public FollowsDto(Member member) {
-        this.homeId = member.getHomeId();
+        this.targetHomeId = member.getHomeId();
         this.name = member.getName();
         this.memberImg = member.getMemberImg();
         this.bio = member.getBio();
