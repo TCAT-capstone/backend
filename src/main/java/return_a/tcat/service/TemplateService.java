@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import return_a.tcat.domain.Template;
-import return_a.tcat.dto.Template.TemplateListResDto;
-import return_a.tcat.dto.Template.TemplateSimpleDto;
+import return_a.tcat.dto.template.TemplateListResDto;
+import return_a.tcat.dto.template.TemplateSimpleDto;
 import return_a.tcat.repository.TemplateRepository;
 
 import java.util.List;

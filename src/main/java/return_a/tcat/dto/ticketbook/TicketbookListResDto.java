@@ -11,6 +11,7 @@ import java.util.List;
 public class TicketbookListResDto {
 
     private List<TicketbookDto> ticketbooks;
+    private String sequence;
 
     public void sortTicketbooks(String sequence) {
         String[] sequenceArray = sequence.split(",");
@@ -33,7 +34,8 @@ public class TicketbookListResDto {
         this.ticketbooks =results;
     }
 
-    public TicketbookListResDto(List<TicketbookDto> ticketbooks) {
+    public TicketbookListResDto(List<TicketbookDto> ticketbooks, String sequence) {
         this.ticketbooks = ticketbooks;
+        this.sequence = sequence;
     }
 }
