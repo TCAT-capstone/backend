@@ -103,7 +103,7 @@ public class TicketRepository {
         if (ticketTitle == null || ticketTitle==""){
             return null;
         }
-        return ticket.ticketTitle.eq(ticketTitle);
+        return ticket.ticketTitle.like("%"+ticketTitle+"%");
     }
 
     private BooleanExpression ticketDate(LocalDateTime ticketDate){
@@ -117,14 +117,14 @@ public class TicketRepository {
         if (ticketSeat == null || ticketSeat ==""){
             return null;
         }
-        return ticket.ticketSeat.eq(ticketSeat);
+        return ticket.ticketSeat.like("%"+ticketSeat+"%");
     }
 
     private BooleanExpression ticketLocation(String ticketLocation){
         if (ticketLocation == null || ticketLocation ==""){
             return null;
         }
-        return ticket.ticketLocation.eq(ticketLocation);
+        return ticket.ticketLocation.like("%"+ticketLocation+"%");
     }
 
     private BooleanExpression keywordLike(String keyword){
