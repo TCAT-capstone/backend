@@ -11,6 +11,7 @@ import return_a.tcat.repository.MemberRepository;
 import return_a.tcat.repository.TicketbookRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,7 +51,6 @@ public class TicketbookService {
     @Transactional
     public List<Ticketbook> manageTicketbook(TicketbookReqDto ticketbookReqDto, Long memberId) {
 
-        List<Ticketbook> ticketbooks = new ArrayList<>();
         List<TicketbookDto> append = ticketbookReqDto.getAppend();
         List<TicketbookDto> update = ticketbookReqDto.getUpdate();
         List<TicketbookDto> delete = ticketbookReqDto.getDelete();
@@ -61,15 +61,37 @@ public class TicketbookService {
         Iterator<TicketbookDto> up =update.iterator();
         while (ap.hasNext()) {
             TicketbookDto ticketbookDto = ap.next();
-            ticketbooks.add(save(ticketbookDto, memberId));
+            save(ticketbookDto, memberId);
         }
 
         while(up.hasNext()){
             TicketbookDto ticketbookDto = up.next();
-            ticketbooks.add(updateTicketbook(ticketbookDto));
+            updateTicketbook(ticketbookDto);
+        }
+
+        List<Ticketbook> ticketbooks = new ArrayList<>();
+        Member member = memberRepository.findOne(memberId);
+        ticketbooks = getTicketbook(member.getSequence());
+
+        return ticketbooks;
+    }
+
+    public List<Ticketbook> getTicketbook(String sequence){
+        List<Ticketbook> ticketbooks = new ArrayList<>();
+
+        String[] sequenceArray = sequence.split(",");
+        List<String> sequenceList = new ArrayList<>(Arrays.asList(sequenceArray));
+
+        List<TicketbookDto> results = new ArrayList<>();
+        Iterator<String> s = sequenceList.iterator();
+
+        while (s.hasNext()) {
+            Long order = Long.valueOf(s.next());
+            ticketbooks.add(ticketbookRepository.findOne(order));
         }
 
         return ticketbooks;
+
     }
 
     @Transactional

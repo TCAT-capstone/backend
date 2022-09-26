@@ -1,4 +1,4 @@
-package return_a.tcat.dto.Template;
+package return_a.tcat.dto.template;
 
 import lombok.Getter;
 import return_a.tcat.domain.Template;

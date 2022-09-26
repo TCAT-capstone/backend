@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import return_a.tcat.dto.Template.TemplateListResDto;
+import return_a.tcat.dto.template.TemplateListResDto;
 import return_a.tcat.service.TemplateService;
 
 @RestController

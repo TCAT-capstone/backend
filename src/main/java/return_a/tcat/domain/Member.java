@@ -51,6 +51,9 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Ticket> tickets = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Follows> follows = new ArrayList<>();
+
     @Builder
     public Member(String homeId, String name, String bio, String memberImg, String email, AuthProvider provider,
                   Integer likeCount, Integer ticketCount, Long defaultTicketbookId, String sequence) {

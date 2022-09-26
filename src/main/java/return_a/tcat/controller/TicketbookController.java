@@ -33,7 +33,7 @@ public class TicketbookController {
         List<TicketbookDto> collect = findTicketbooks.stream()
                 .map(t -> new TicketbookDto(t))
                 .collect(Collectors.toList());
-        TicketbookListResDto resultList = new TicketbookListResDto(collect);
+        TicketbookListResDto resultList = new TicketbookListResDto(collect,member.getSequence());
         resultList.sortTicketbooks(member.getSequence());
 
         return ResponseEntity.status(HttpStatus.OK).body(resultList);
