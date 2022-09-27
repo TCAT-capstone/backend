@@ -130,6 +130,13 @@ public class Member {
     }
 
     /**
+     * 티켓북 삭제시 총 티켓 수 감소*
+     */
+    public void subtractTotalTicketCount(Integer count){
+        this.ticketCount-=count;
+
+    }
+    /**
      * 티켓 삭제시 member 총 좋아요수 감소
      */
     public void subtractTotalLikeCount(Integer count) {
