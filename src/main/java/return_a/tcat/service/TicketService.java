@@ -1,6 +1,7 @@
 package return_a.tcat.service;
 
 import lombok.RequiredArgsConstructor;
+import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,10 @@ import return_a.tcat.repository.MemberRepository;
 import return_a.tcat.repository.TicketRepository;
 import return_a.tcat.repository.TicketbookRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,6 +83,21 @@ public class TicketService {
         return response;
     }
 
+    public TicketListResDto findFollowingTickets(Long memberId, LocalDateTime cursorDate, Long cursorId, Pageable pageable) {
+
+        Page<Ticket> findFollowingTickets=ticketRepository.findFollowingTickets(memberId,cursorDate,cursorId,pageable);
+        List<Ticket> findTickets = findFollowingTickets.getContent();
+        List<TicketSimpleDto> collect = findTickets.stream()
+                .map(t -> new TicketSimpleDto(t))
+                .collect(Collectors.toList());
+        TicketListResDto response = new TicketListResDto(collect);
+        if (findFollowingTickets.getTotalElements() == 0) {
+            response.setHasNotTicket(true);
+        }
+
+        return response;
+    }
+
     /**
      * 유저의 티켓 조회
      */
@@ -133,7 +152,7 @@ public class TicketService {
     public Boolean checkTicketOwner(Long memberId, Long ticketId) {
         Ticket ticket = ticketRepository.findOne(ticketId);
         Member member = ticket.getMember();
-        if(memberId.equals(member.getId())){
+        if (memberId.equals(member.getId())) {
             return true;
         }
 
@@ -163,9 +182,10 @@ public class TicketService {
      */
     public TicketListResDto findByKeyword(Long cursorId,
                                           String keyword,
-                                          String ticketTitle, LocalDateTime ticketDate,
+                                          String ticketTitle, String ticketDate,
                                           String ticketSeat, String ticketLocation,
                                           Pageable pageable) {
+
 
         Page<Ticket> findTicketsByKeyword = ticketRepository.findByKeyword(cursorId, keyword, ticketTitle, ticketDate, ticketSeat, ticketLocation, pageable);
         List<Ticket> findTickets = findTicketsByKeyword.getContent();

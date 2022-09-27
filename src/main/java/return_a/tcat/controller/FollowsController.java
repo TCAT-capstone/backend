@@ -30,8 +30,6 @@ public class FollowsController {
         return ResponseEntity.status(HttpStatus.OK).body(followsService.getFollower(homeId));
     }
 
-    //한사람을 구독중인지 아닌지 파악하는 API
-
     //중복 domain저장되는거 수정->수정하기
     @PutMapping("/member/{homeId}/following")
     public ResponseEntity<FollowsListResDto> following(@PathVariable(value="homeId") String homeId,

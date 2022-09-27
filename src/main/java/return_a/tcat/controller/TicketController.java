@@ -18,7 +18,10 @@ import return_a.tcat.service.MemberService;
 import return_a.tcat.service.TicketService;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,15 +41,27 @@ public class TicketController {
         return ResponseEntity.status(HttpStatus.OK).body(ticketListResDto);
     }
 
+    @GetMapping("/tickets/feed")
+    public ResponseEntity<TicketListResDto> getFeedTickets(@RequestParam(value="cursorDate",required = false)
+                                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime cursorDate,
+                                                           @RequestParam(value="cursorId",required = false) Long cursorId,
+                                                           @PageableDefault(size = 12) Pageable pageable) {
+        Member member = memberService.findMemberByAuth();
+        Long memberId = member.getId();
+        TicketListResDto ticketListResDto = ticketService.findFollowingTickets(memberId, cursorDate, cursorId, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(ticketListResDto);
+    }
+
     @GetMapping("/search")
     public ResponseEntity<TicketListResDto> getSearchTickets(@RequestParam(value="cursorId",required = false) Long cursorId,
                                                              @RequestParam(value="keyword") String keyword,
                                                              @RequestParam(value="ticketTitle", required = false) String ticketTitle,
-                                                             @RequestParam(value="ticketDate", required = false)
-                                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime ticketDate,
+                                                             @RequestParam(value="ticketDate", required = false) String ticketDate,
                                                              @RequestParam(value="ticketSeat", required = false) String ticketSeat,
                                                              @RequestParam(value="ticketLocation", required = false) String ticketLocation,
                                                              @PageableDefault(size = 12) Pageable pageable){
+
+
         TicketListResDto ticketListResDto = ticketService.findByKeyword(cursorId,keyword,ticketTitle,ticketDate,ticketSeat,ticketLocation,pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(ticketListResDto);
