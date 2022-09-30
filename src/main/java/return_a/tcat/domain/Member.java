@@ -39,7 +39,6 @@ public class Member {
     private Integer likeCount;
     private Integer ticketCount;
 
-    private Long defaultTicketbookId;
     private String sequence;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
@@ -56,7 +55,7 @@ public class Member {
 
     @Builder
     public Member(String homeId, String name, String bio, String memberImg, String email, AuthProvider provider,
-                  Integer likeCount, Integer ticketCount, Long defaultTicketbookId, String sequence) {
+                  Integer likeCount, Integer ticketCount, String sequence) {
         this.homeId = homeId;
         this.name = name;
         this.bio = bio;
@@ -65,14 +64,12 @@ public class Member {
         this.provider = provider;
         this.likeCount = likeCount;
         this.ticketCount = ticketCount;
-        this.defaultTicketbookId = defaultTicketbookId;
         this.sequence = sequence;
     }
 
-    public void changeMemberInfo(String name, String homeId, Long defaultTicketbookId) {
+    public void changeMemberInfo(String name, String homeId) {
         this.name = name;
         this.homeId = homeId;
-        this.defaultTicketbookId = defaultTicketbookId;
     }
 
     public void changeMemberProfile(String name, String bio) {
