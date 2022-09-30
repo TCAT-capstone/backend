@@ -27,21 +27,20 @@ public class TicketRepository {
     private final EntityManager em;
     JPAQueryFactory queryFactory;
 
-    public Integer findCountByTicketBook(Long ticketbookId){
-        List<Ticket> count = em.createQuery("select t from Ticket t where t.ticketbook.id= :ticketbookId",Ticket.class)
-                .setParameter("ticketbookId",ticketbookId)
+    public Integer findCountByTicketBook(Long ticketbookId) {
+        List<Ticket> count = em.createQuery("select t from Ticket t where t.ticketbook.id= :ticketbookId", Ticket.class)
+                .setParameter("ticketbookId", ticketbookId)
                 .getResultList();
 
         return Integer.valueOf(count.size());
     }
 
-    public Integer findLikeByTicketBook(Long ticketbookId){
-        Query query = em.createQuery("select sum(t.likeCount) from Ticket t where t.ticketbook.id= :ticketbookId");
-        Integer count =  Integer.parseInt(String.valueOf(query.setParameter("ticketbookId",ticketbookId).getSingleResult()));
-        System.out.println(count);
+    public Integer findLikeByTicketBook(Long ticketbookId) {
+        Query query = em.createQuery("select COALESCE(sum(t.likeCount),0) from Ticket t where t.ticketbook.id= :ticketbookId");
+        String result = String.valueOf(query.setParameter("ticketbookId", ticketbookId).getSingleResult());
+        Integer count=Integer.parseInt(String.valueOf(query.setParameter("ticketbookId", ticketbookId).getSingleResult()));
 
         return count;
-
     }
 
 
@@ -160,7 +159,7 @@ public class TicketRepository {
     }
 
     private BooleanExpression ticketDate(String ticketDate) {
-        if (ticketDate == null || ticketDate =="") {
+        if (ticketDate == null || ticketDate == "") {
             return null;
         }
 
