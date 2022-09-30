@@ -116,7 +116,7 @@ public class TicketbookService {
 
         Ticketbook ticketbook = Ticketbook.builder()
                 .name("default")
-                .ticketbookImg(null)
+                .ticketbookImg("")
                 .description("기본 티켓북입니다.")
                 .build();
 

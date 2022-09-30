@@ -84,7 +84,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMemberInfo(Long memberId, MemberSignUpReqDto memberSignUpReqDto, Long defaultTicketbookId) {
+    public void updateMemberInfo(Long memberId, MemberSignUpReqDto memberSignUpReqDto) {
         Member member = memberRepository.findOne(memberId);
         member.changeMemberInfo(memberSignUpReqDto.getName(), memberSignUpReqDto.getHomeId());
     }

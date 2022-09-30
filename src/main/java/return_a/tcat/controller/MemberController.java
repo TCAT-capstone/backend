@@ -51,8 +51,8 @@ public class MemberController {
     public ResponseEntity<MemberSignUpResDto> signup(@RequestBody MemberSignUpReqDto memberSignUpReqDto) {
         Member member = memberService.findMemberByAuth();
         Long memberId = member.getId();
-        Long defaultTicketbookId = ticketbookService.saveDefault(memberId);
-        memberService.updateMemberInfo(memberId, memberSignUpReqDto, defaultTicketbookId);
+        ticketbookService.saveDefault(memberId);
+        memberService.updateMemberInfo(memberId, memberSignUpReqDto);
         MemberSignUpResDto memberSignUpResDto = new MemberSignUpResDto(member);
 
         return ResponseEntity.status(HttpStatus.OK).body(memberSignUpResDto);
