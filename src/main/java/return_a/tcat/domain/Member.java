@@ -72,10 +72,10 @@ public class Member {
         this.homeId = homeId;
     }
 
-    public void changeMemberProfile(String name, String bio,String memberImg) {
+    public void changeMemberProfile(String name, String bio) {
         this.name = name;
         this.bio = bio;
-        this.memberImg = memberImg;
+//        this.memberImg = memberImg;
 
     }
 

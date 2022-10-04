@@ -11,12 +11,12 @@ public class MemberEditResDto {
 
     private String name;
     private String bio;
-    private String memeberImg;
+//    private String memeberImg;
 
     @Builder
     public MemberEditResDto(Member member){
         this.name=member.getName();
         this.bio=member.getBio();
-        this.bio=member.getMemberImg();
+//        this.bio=member.getMemberImg();
     }
 }
