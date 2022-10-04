@@ -72,9 +72,10 @@ public class Member {
         this.homeId = homeId;
     }
 
-    public void changeMemberProfile(String name, String bio) {
+    public void changeMemberProfile(String name, String bio,String memberImg) {
         this.name = name;
         this.bio = bio;
+        this.memberImg = memberImg;
 
     }
 
@@ -86,7 +87,7 @@ public class Member {
 
     public void replaceTicketbookSequence(Long tempId, Long ticketbookId) {
 
-        this.sequence = sequence.replace(tempId.toString(),ticketbookId.toString());
+        this.sequence = sequence.replace(tempId.toString(), ticketbookId.toString());
 
     }
 
@@ -94,7 +95,7 @@ public class Member {
         String[] sequenceArray = sequence.split(",");
         List<String> sequenceList = new ArrayList<>(Arrays.asList(sequenceArray));
         sequenceList.remove(ticketbookId.toString());
-        this.sequence = StringUtils.join(sequenceList,",");
+        this.sequence = StringUtils.join(sequenceList, ",");
     }
 
 
@@ -129,10 +130,11 @@ public class Member {
     /**
      * 티켓북 삭제시 총 티켓 수 감소*
      */
-    public void subtractTotalTicketCount(Integer count){
-        this.ticketCount-=count;
+    public void subtractTotalTicketCount(Integer count) {
+        this.ticketCount -= count;
 
     }
+
     /**
      * 티켓 삭제시 member 총 좋아요수 감소
      */

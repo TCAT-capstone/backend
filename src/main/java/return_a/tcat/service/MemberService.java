@@ -92,7 +92,7 @@ public class MemberService {
     @Transactional
     public void updateMemberProfile(Long memberId, MemberEditReqDto memberEditReqDto) {
         Member member = memberRepository.findOne(memberId);
-        member.changeMemberProfile(memberEditReqDto.getName(), memberEditReqDto.getBio());
+        member.changeMemberProfile(memberEditReqDto.getName(), memberEditReqDto.getBio(),memberEditReqDto.getMemberImg());
     }
 
     public UserDetails loadUserById(String id) {
