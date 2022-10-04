@@ -8,6 +8,7 @@ import return_a.tcat.domain.Ticketbook;
 import return_a.tcat.dto.ticketbook.TicketbookDto;
 import return_a.tcat.dto.ticketbook.TicketbookReqDto;
 import return_a.tcat.repository.MemberRepository;
+import return_a.tcat.repository.TicketRepository;
 import return_a.tcat.repository.TicketbookRepository;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class TicketbookService {
 
     private final TicketbookRepository ticketbookRepository;
     private final MemberRepository memberRepository;
+    private final TicketRepository ticketRepository;
 
     @Transactional
     public Ticketbook save(TicketbookDto ticketbookDto, Long memberId) {
@@ -58,13 +60,13 @@ public class TicketbookService {
         deleteTicketbook(delete, memberId);
 
         Iterator<TicketbookDto> ap = append.iterator();
-        Iterator<TicketbookDto> up =update.iterator();
+        Iterator<TicketbookDto> up = update.iterator();
         while (ap.hasNext()) {
             TicketbookDto ticketbookDto = ap.next();
             save(ticketbookDto, memberId);
         }
 
-        while(up.hasNext()){
+        while (up.hasNext()) {
             TicketbookDto ticketbookDto = up.next();
             updateTicketbook(ticketbookDto);
         }
@@ -76,7 +78,7 @@ public class TicketbookService {
         return ticketbooks;
     }
 
-    public List<Ticketbook> getTicketbook(String sequence){
+    public List<Ticketbook> getTicketbook(String sequence) {
         List<Ticketbook> ticketbooks = new ArrayList<>();
 
         String[] sequenceArray = sequence.split(",");
@@ -95,12 +97,14 @@ public class TicketbookService {
     }
 
     @Transactional
-    public void deleteTicketbook(List<TicketbookDto> ticketbooksDto,Long memberId){
+    public void deleteTicketbook(List<TicketbookDto> ticketbooksDto, Long memberId) {
         Member member = memberRepository.findOne(memberId);
         Iterator<TicketbookDto> it = ticketbooksDto.iterator();
 
         while (it.hasNext()) {
             TicketbookDto ticketbookDto = it.next();
+            member.subtractTotalTicketCount(ticketRepository.findCountByTicketBook(ticketbookDto.getId()));
+            member.subtractTotalLikeCount(ticketRepository.findLikeByTicketBook(ticketbookDto.getId()));
             ticketbookRepository.deleteById(ticketbookDto.getId());
         }
     }
@@ -112,7 +116,7 @@ public class TicketbookService {
 
         Ticketbook ticketbook = Ticketbook.builder()
                 .name("default")
-                .ticketbookImg(null)
+                .ticketbookImg("")
                 .description("기본 티켓북입니다.")
                 .build();
 

@@ -39,7 +39,6 @@ public class Member {
     private Integer likeCount;
     private Integer ticketCount;
 
-    private Long defaultTicketbookId;
     private String sequence;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
@@ -56,7 +55,7 @@ public class Member {
 
     @Builder
     public Member(String homeId, String name, String bio, String memberImg, String email, AuthProvider provider,
-                  Integer likeCount, Integer ticketCount, Long defaultTicketbookId, String sequence) {
+                  Integer likeCount, Integer ticketCount, String sequence) {
         this.homeId = homeId;
         this.name = name;
         this.bio = bio;
@@ -65,19 +64,18 @@ public class Member {
         this.provider = provider;
         this.likeCount = likeCount;
         this.ticketCount = ticketCount;
-        this.defaultTicketbookId = defaultTicketbookId;
         this.sequence = sequence;
     }
 
-    public void changeMemberInfo(String name, String homeId, Long defaultTicketbookId) {
+    public void changeMemberInfo(String name, String homeId) {
         this.name = name;
         this.homeId = homeId;
-        this.defaultTicketbookId = defaultTicketbookId;
     }
 
-    public void changeMemberProfile(String name, String bio) {
+    public void changeMemberProfile(String name, String bio,String memberImg) {
         this.name = name;
         this.bio = bio;
+        this.memberImg = memberImg;
 
     }
 
@@ -89,7 +87,7 @@ public class Member {
 
     public void replaceTicketbookSequence(Long tempId, Long ticketbookId) {
 
-        this.sequence = sequence.replace(tempId.toString(),ticketbookId.toString());
+        this.sequence = sequence.replace(tempId.toString(), ticketbookId.toString());
 
     }
 
@@ -97,7 +95,7 @@ public class Member {
         String[] sequenceArray = sequence.split(",");
         List<String> sequenceList = new ArrayList<>(Arrays.asList(sequenceArray));
         sequenceList.remove(ticketbookId.toString());
-        this.sequence = StringUtils.join(sequenceList,",");
+        this.sequence = StringUtils.join(sequenceList, ",");
     }
 
 
@@ -127,6 +125,14 @@ public class Member {
      */
     public void subtractTicketCount() {
         this.ticketCount--;
+    }
+
+    /**
+     * 티켓북 삭제시 총 티켓 수 감소*
+     */
+    public void subtractTotalTicketCount(Integer count) {
+        this.ticketCount -= count;
+
     }
 
     /**

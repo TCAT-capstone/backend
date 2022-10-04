@@ -33,7 +33,6 @@ public class MemberService {
                 .provider(memberDto.getProvider())
                 .likeCount(0)
                 .ticketCount(0)
-                .defaultTicketbookId(null)
                 .sequence(null)
                 .build();
 
@@ -85,15 +84,15 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMemberInfo(Long memberId, MemberSignUpReqDto memberSignUpReqDto, Long defaultTicketbookId) {
+    public void updateMemberInfo(Long memberId, MemberSignUpReqDto memberSignUpReqDto) {
         Member member = memberRepository.findOne(memberId);
-        member.changeMemberInfo(memberSignUpReqDto.getName(), memberSignUpReqDto.getHomeId(), defaultTicketbookId);
+        member.changeMemberInfo(memberSignUpReqDto.getName(), memberSignUpReqDto.getHomeId());
     }
 
     @Transactional
     public void updateMemberProfile(Long memberId, MemberEditReqDto memberEditReqDto) {
         Member member = memberRepository.findOne(memberId);
-        member.changeMemberProfile(memberEditReqDto.getName(), memberEditReqDto.getBio());
+        member.changeMemberProfile(memberEditReqDto.getName(), memberEditReqDto.getBio(),memberEditReqDto.getMemberImg());
     }
 
     public UserDetails loadUserById(String id) {
