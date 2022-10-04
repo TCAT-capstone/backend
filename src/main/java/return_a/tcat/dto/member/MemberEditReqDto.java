@@ -8,6 +8,6 @@ public class MemberEditReqDto {
 
     private String name;
     private String bio;
-    private String memberImg;
+//    private String memberImg;
 
 }
