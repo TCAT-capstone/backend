@@ -53,7 +53,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/auth/**", "/oauth2/**")
                 .permitAll()
-                .antMatchers(HttpMethod.GET,"/**/tickets/**", "/**/profile")
+                .antMatchers(HttpMethod.GET,"/**/tickets/**", "/**/profile", "/**/ticketbooks")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
